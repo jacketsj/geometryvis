@@ -9,13 +9,10 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 include_directories("${PROJECT_SOURCE_DIR}")
 
 set(CMAKE_CXX_FLAGS "-Wall")
-# -lSDL2 -lSDL2main")
-add_executable(sdl2test ${PROJECT_SOURCE_DIR}/sdl2test1.cpp)
+
+add_executable(sdl2test1 ${PROJECT_SOURCE_DIR}/sdl2test1.cpp)
+add_executable(sdl2test2 ${PROJECT_SOURCE_DIR}/sdl2test2.cpp)
 
 find_package(SDL2 REQUIRED)
-#find_file(SDL2_INCLUDE_DIR NAME SDL.h HINTS SDL2)
-#find_library(SDL2_LIBRARY NAME SDL2)
-
-#target_include_directories(sdl2test ${SDL2_INCLUDE_DIR})
-#target_link_libraries(sdl2test ${SDL2_LIBRARY})
-target_link_libraries(sdl2test ${SDL2_LIBRARIES})
+target_link_libraries(sdl2test1 ${SDL2_LIBRARIES})
+target_link_libraries(sdl2test2 ${SDL2_LIBRARIES})
