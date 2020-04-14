@@ -8,11 +8,15 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 include_directories("${PROJECT_SOURCE_DIR}")
 
-set(CMAKE_CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS "-Wall -std=c++1z")
 
 add_executable(sdl2test1 ${PROJECT_SOURCE_DIR}/sdl2test1.cpp)
 add_executable(sdl2test2 ${PROJECT_SOURCE_DIR}/sdl2test2.cpp)
+add_executable(sdl2test3 ${PROJECT_SOURCE_DIR}/sdl2test3.cpp)
 
 find_package(SDL2 REQUIRED)
+#include_directories(sdl2test3 ${SDL2_INCLUDE_DIRS})
 target_link_libraries(sdl2test1 ${SDL2_LIBRARIES})
 target_link_libraries(sdl2test2 ${SDL2_LIBRARIES})
+target_link_libraries(sdl2test3 ${SDL2_LIBRARIES})
+target_link_libraries(sdl2test3 SDL2_gfx)
