@@ -1,0 +1,3 @@
+[submodule "sigiltests/sigil"]
+	path = sigiltests/sigil
+	url = https://gitlab.com/geoff-nagy/sigil.git
