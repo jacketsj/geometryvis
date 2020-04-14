@@ -1,8 +1,10 @@
 #include <sl.h>
 
+const int W = 400, H = 400;
+
 int main(int args, char* argv[]) {
 	// set up our window and a few resources we need
-	slWindow(400, 400, "Simple SIGIL Example", false);
+	slWindow(W, H, "Simple SIGIL Example", false);
 	slSetFont(slLoadFont("ttf/white_rabbit.ttf"), 24);
 	slSetTextAlign(SL_ALIGN_CENTER);
 	int tex = slLoadTexture("png/glow.png");
@@ -24,10 +26,13 @@ int main(int args, char* argv[]) {
 		slText(200, 220, "Sprites, text, sound, input, and more!");
 		slLine(48, 210, 352, 210);
 
+		// other lines
+		slLine(100, 100, 360, 200);
+
 		slRender();
 		// draw everything
 	}
-	slClose();
 	// close the window and shut down SIGIL
+	slClose();
 	return 0;
 }
