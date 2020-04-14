@@ -1,0 +1,28 @@
+figure out animation
+
+draw rotated boxes
+draw rotated boxes via 4 points
+
+better coordinate system (non window specific)
+abstract away the sdl stuff
+class system:
+renderer (incl viewport)
+figure
+-dot (circle) - midpoint algorithm
+-line (rotated box with circled out endpoints)
+-polygons - filled and unfilled
+-thickness for all these
+-text
+-graph embedding (possibly with edge labels)
+
+also store all these with underlying basic CG structures
+- allow for basic CG algorithms
+
+interactive drawing of these
+
+saving/loading data
+
+
+create an interface for stuff:
+init()
+update(time delta?) - returns a diagram (that will then be drawn)
