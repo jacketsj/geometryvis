@@ -1,15 +1,18 @@
 # Geometry Vis
-This is a library/application for visualizing geometry.
+This is a library/application for visualizing geometry algorithms.
+Current in development.
 
 ## Dependencies
-This repo relies on [SIGIL](https://libsigil.com) (Sound, Input, and Graphics Integration Library),
-and [GLFW3](https://github.com/glfw/glfw).
-The installation instructions for SIGIL are quite outdated, so try these steps:
+This repo relies on a [modified version of SIGIL](https://github.com/jacketsj/sigil) (Sound, Input, and Graphics Integration Library).
+The modified version was developed in tandem with Geometry Vis.
+The original version of SIGIL is available [here](http://www.libsigil.com/).
+
+The installation instructions for SIGIL are quite outdated, so use these steps:
 1. Install OpenAL. On Ubuntu (18.04), the following should suffice:
 ```
 sudo apt install libalut-dev
 ```
-2. Clone the [SIGIL source code](https://gitlab.com/geoff-nagy/sigil/tree/master). This should also be possible with a simple `git submodule update`.
+2. Clone the [modified SIGIL source code](https://github.com/jacketsj/sigil). This should also be possible with a simple `git submodule update`.
 3. Build SIGIL according loosely according to the instructions from [this thread](https://openeuphoria.org/forum/133840.wc) (saved in wayback machine april 13 2020), which are as follows:
 ```
 sudo apt install libfreetype6-dev libglew-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev 
