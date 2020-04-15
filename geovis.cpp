@@ -59,6 +59,10 @@ struct dim {
 	}
 };
 
+namespace tool_handler {
+std::unique_ptr<tool> init() { return std::make_unique<tool_line>(); }
+} // namespace tool_handler
+
 int main(int args, char* argv[]) {
 	// dimensions of window
 	dim D(640, 480);
@@ -72,7 +76,7 @@ int main(int args, char* argv[]) {
 	mw.watch(mb_right);
 
 	std::vector<std::unique_ptr<geometry>> geo_stack;
-	std::unique_ptr<tool> cur_tool = std::make_unique<tool_line>();
+	std::unique_ptr<tool> cur_tool = tool_handler::init();
 
 	col::blue.set();
 
