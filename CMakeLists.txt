@@ -14,6 +14,6 @@ set(CMAKE_CXX_FLAGS "-Wall -std=c++1z")
 
 add_executable(geovis ${PROJECT_SOURCE_DIR}/geovis.cpp)
 
-target_link_libraries(geovis glfw)
+#target_link_libraries(geovis glfw)
 target_link_libraries(geovis sigil)
 target_link_libraries(geovis GLESv2)

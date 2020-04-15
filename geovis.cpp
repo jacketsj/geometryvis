@@ -1,4 +1,3 @@
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include <map>
 #include <optional>
@@ -35,6 +34,7 @@ struct pt {
 	bool operator<(const pt& oth) const {
 		return std::tie(x, y) < std::tie(oth.x, oth.y);
 	}
+	void print() const { std::cout << "(" << x << ',' << y << ")"; }
 };
 
 struct circle {
@@ -64,12 +64,14 @@ struct line_drawer {
 	std::optional<pt> cur;
 	std::vector<line_segment> segs;
 	line_drawer() : cur(std::nullopt) {}
-	void start(const pt& p) {
-		// if (!cur)
-		cur = std::make_optional(p);
-	}
+	void start(const pt& p) { cur = std::make_optional(p); }
 	void end(const pt& p) {
 		if (cur) {
+			std::cout << "created segment: ";
+			cur.value().print();
+			std::cout << "--";
+			p.print();
+			std::cout << std::endl;
 			segs.emplace_back(cur.value(), p);
 			cur = std::nullopt;
 		}
@@ -114,15 +116,18 @@ struct dim {
 	dim(int x, int y) : x(x), y(y), scale_x(1), scale_y(1) {}
 	void update() {
 		int x0, y0;
-		// TODO replace with new SIGIL function
-		glfwGetWindowSize(sliProgramWindow, &x0, &y0);
+		slGetWindowSize(&x0, &y0);
 		scale_x = double(x0) / double(x);
 		scale_y = double(y0) / double(y);
 	}
-	void render_transform() { slScale(scale_x, scale_y); };
+	void render_transform() {
+		slIdentity();
+		slScale(scale_x, scale_y);
+	};
 	static int round(double d) { return int(d + 0.5 + eps); }
 	pt reverse_transform(double x0, double y0) {
-		return pt(round(x0 / scale_x), round(y0 / scale_y));
+		// return pt(round(x0 / scale_x), round(y0 / scale_y));
+		return pt(x0 / scale_x, y0 / scale_y);
 	}
 };
 
@@ -163,14 +168,15 @@ int main(int args, char* argv[]) {
 		// get mouse x and y
 		int mx = slGetMouseX();
 		int my = slGetMouseY();
-		pt mp = D.reverse_transform(mx, my); // mouse point
+		// world coordinate mouse point
+		pt mp = D.reverse_transform(mx, my);
 
 		// if left mouse button pressed, start line segment
 		if (mw.pressed(mb_left)) {
 			ld.start(mp);
 		}
 
-		// if right mouse button pressed, end line segment
+		// if left mouse button released, end line segment
 		if (mw.released(mb_left)) {
 			ld.end(mp);
 		}
