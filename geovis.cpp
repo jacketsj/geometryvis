@@ -1,93 +1,21 @@
 #include <iostream>
 #include <map>
+#include <memory>
 #include <optional>
 #include <set>
 #include <sl.h>
 #include <tuple>
 #include <vector>
 
+#include "circle.h"
+#include "col.h"
+#include "geometry.h"
+#include "line.h"
+#include "point.h"
+#include "tool.h"
+#include "tool_line.h"
+
 const double eps = 1e-7;
-
-namespace col {
-struct col {
-	double r, g, b, a;
-	col(double r, double g, double b, double a) : r(r), g(g), b(b), a(a) {}
-	void set() const;
-};
-col white(1, 1, 1, 1);
-col red(0.8, 0.15, 0.1, 1);
-col green(0.1, 0.9, 0.2, 1);
-col blue(0.1, 0.1, 0.85, 1);
-col cur_col = white;
-void col::set() const {
-	cur_col = *this;
-	slSetForeColor(r, g, b, a);
-}
-}; // namespace col
-
-struct pt {
-	int x, y;
-	pt(int x, int y) : x(x), y(y) {}
-	int norm2() const { return x * x + y * y; }
-	pt operator-(const pt& oth) const { return pt(x - oth.x, y - oth.y); }
-	friend int dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
-	bool operator<(const pt& oth) const {
-		return std::tie(x, y) < std::tie(oth.x, oth.y);
-	}
-	void print() const { std::cout << "(" << x << ',' << y << ")"; }
-};
-
-struct circle {
-	pt p;
-	int r;
-	circle(int x, int y, int r) : p(x, y), r(r) {}
-	void draw() const { slCircleFill(p.x, p.y, r, r); }
-	bool isect(const pt& p0) const { return dist2(p, p0) <= r * r; }
-	bool isect(int x0, int y0) const { return isect(pt(x0, y0)); }
-	bool operator<(const circle& oth) const {
-		return std::tie(p.x, p.y, r) < std::tie(oth.p.x, oth.p.y, oth.r);
-	}
-};
-
-struct line_segment {
-	pt p1, p2;
-	int r; // thickness
-	line_segment(pt p1, pt p2) : p1(p1), p2(p2), r(1) {}
-	line_segment(pt p1, pt p2, int r) : p1(p1), p2(p2), r(r) {}
-	void draw() const { slLine(p1.x, p1.y, p2.x, p2.y); }
-	bool operator<(const line_segment& oth) const {
-		return std::tie(p1, p2) < std::tie(oth.p1, oth.p2);
-	}
-};
-
-struct line_drawer {
-	std::optional<pt> cur;
-	std::vector<line_segment> segs;
-	line_drawer() : cur(std::nullopt) {}
-	void start(const pt& p) { cur = std::make_optional(p); }
-	void end(const pt& p) {
-		if (cur) {
-			std::cout << "created segment: ";
-			cur.value().print();
-			std::cout << "--";
-			p.print();
-			std::cout << std::endl;
-			segs.emplace_back(cur.value(), p);
-			cur = std::nullopt;
-		}
-	}
-	void draw(const pt& mouse) {
-		for (const auto& ls : segs)
-			ls.draw();
-		if (cur) {
-			col::col prev = col::cur_col;
-			col::red.set();
-			line_segment cur_ls(cur.value(), mouse);
-			cur_ls.draw();
-			prev.set();
-		}
-	}
-};
 
 // map and set are slow for small values
 struct mouse_watcher {
@@ -143,7 +71,8 @@ int main(int args, char* argv[]) {
 	mw.watch(mb_left);
 	mw.watch(mb_right);
 
-	line_drawer ld;
+	std::vector<std::unique_ptr<geometry>> geo_stack;
+	std::unique_ptr<tool> cur_tool = std::make_unique<tool_line>();
 
 	col::blue.set();
 
@@ -171,18 +100,28 @@ int main(int args, char* argv[]) {
 		// world coordinate mouse point
 		pt mp = D.reverse_transform(mx, my);
 
-		// if left mouse button pressed, start line segment
-		if (mw.pressed(mb_left)) {
-			ld.start(mp);
-		}
-
-		// if left mouse button released, end line segment
+		// if mouse button released, pass it on to tool
 		if (mw.released(mb_left)) {
-			ld.end(mp);
+			cur_tool->l_release(geo_stack, mp);
+		}
+		if (mw.released(mb_right)) {
+			cur_tool->r_release(geo_stack, mp);
 		}
 
-		// draw all line segments
-		ld.draw(mp);
+		// if mouse button pressed, pass it on to tool
+		if (mw.pressed(mb_left)) {
+			cur_tool->l_click(geo_stack, mp);
+		}
+		if (mw.pressed(mb_right)) {
+			cur_tool->r_click(geo_stack, mp);
+		}
+
+		// draw all geometry
+		for (auto& geo_ptr : geo_stack)
+			geo_ptr->draw();
+
+		// draw tool
+		cur_tool->draw(mp);
 
 		// draw everything
 		slRender();
