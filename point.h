@@ -1,7 +1,8 @@
 #pragma once
 
-#include <iostream>
 #include <sl.h>
+#include <sstream>
+#include <string>
 #include <vector>
 
 #include "geometry.h"
@@ -17,5 +18,9 @@ public:
 	friend int dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
 	virtual std::vector<int> comp_list() const { return {x, y}; }
 	virtual void draw() const { slPoint(x, y); }
-	void print() const { std::cout << "(" << x << ',' << y << ")"; }
+	std::string to_string() const {
+		std::stringstream ss;
+		ss << "(" << x << ',' << y << ")";
+		return ss.str();
+	}
 };

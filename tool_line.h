@@ -1,9 +1,12 @@
 #pragma once
 
 #include <memory>
+#include <sstream>
+#include <string>
 #include <vector>
 
 #include "col.h"
+#include "console.h"
 #include "point.h"
 
 class tool_line : public tool {
@@ -11,11 +14,10 @@ private:
 	void start(const pt& p) { cur = std::make_optional(p); }
 	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
 		if (cur) {
-			std::cout << "created segment: ";
-			cur.value().print();
-			std::cout << "--";
-			p.print();
-			std::cout << std::endl;
+			std::stringstream ss;
+			ss << "created segment: " << cur.value().to_string() << "--"
+				 << p.to_string();
+			console::get().print(ss.str());
 			geo_stack.push_back(std::make_unique<line_segment>(cur.value(), p));
 			cur = std::nullopt;
 		}

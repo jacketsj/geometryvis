@@ -1,4 +1,3 @@
-#include <iostream>
 #include <map>
 #include <memory>
 #include <optional>
@@ -9,6 +8,7 @@
 
 #include "circle.h"
 #include "col.h"
+#include "console.h"
 #include "geometry.h"
 #include "line.h"
 #include "point.h"
@@ -80,7 +80,7 @@ int main(int args, char* argv[]) {
 
 	col::blue.set();
 
-	// int dt = 0;
+	console& con = console::get();
 
 	while (!slShouldClose() && !slGetKey(SL_KEY_ESCAPE)) {
 		// set the default background col
@@ -91,9 +91,6 @@ int main(int args, char* argv[]) {
 
 		// update the scaling accordingly
 		D.render_transform();
-
-		// get delta time
-		// dt = slGetDeltaTime();
 
 		// update mouse watcher
 		mw.update();
@@ -126,6 +123,9 @@ int main(int args, char* argv[]) {
 
 		// draw tool
 		cur_tool->draw(mp);
+
+		// draw text
+		con.draw();
 
 		// draw everything
 		slRender();
