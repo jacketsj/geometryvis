@@ -9,23 +9,24 @@
 #include "console.h"
 #include "point.h"
 
-class tool_line : public tool {
+class tool_circle : public tool {
 private:
 	void start(const pt& p) { cur = std::make_optional(p); }
 	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
 		if (cur) {
 			std::stringstream ss;
-			ss << "created segment: " << cur.value().to_string() << "--"
+			ss << "created circle: (" << cur.value().to_string() << ")--"
 				 << p.to_string();
 			console::get().print(ss.str());
-			geo_stack.push_back(std::make_unique<line_segment>(cur.value(), p));
+			geo_stack.push_back(
+					std::make_unique<circle>(cur.value(), dist2(cur.value(), p)));
 			cur = std::nullopt;
 		}
 	}
 	std::optional<pt> cur;
 
 public:
-	tool_line() : cur(std::nullopt) { print_tool_name("Line Segment"); }
+	tool_circle() : cur(std::nullopt) { print_tool_name("Circle"); }
 	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack,
 											 pt mp) {
 		start(mp);
@@ -42,8 +43,8 @@ public:
 		if (cur) {
 			col::col prev = col::cur_col;
 			col::red.set();
-			line_segment cur_ls(cur.value(), mp);
-			cur_ls.draw();
+			circle cur_circ(cur.value(), dist2(cur.value(), mp));
+			cur_circ.draw();
 			prev.set();
 		}
 	}

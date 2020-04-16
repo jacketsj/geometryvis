@@ -13,6 +13,7 @@
 #include "line.h"
 #include "point.h"
 #include "tool.h"
+#include "tool_circle.h"
 #include "tool_line.h"
 
 const double eps = 1e-7;
@@ -61,12 +62,12 @@ struct dim {
 };
 
 namespace tool_handler {
-std::unique_ptr<tool> init() { return std::make_unique<tool_line>(); }
+std::unique_ptr<tool> init() { return std::make_unique<tool_circle>(); }
 } // namespace tool_handler
 
 int main(int args, char* argv[]) {
 	// dimensions of window
-	dim D(640, 480);
+	dim D(1280, 720);
 
 	// set up our window and a few resources we need
 	slWindow(D.x, D.y, "Geometry Vis", false);
