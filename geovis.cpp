@@ -82,7 +82,7 @@ int main(int args, char* argv[]) {
 		// world coordinate mouse point
 		pt mp = D.reverse_transform(mx, my);
 
-		// update tool handler
+		// update tool handler (which also updates tool)
 		th.update(mp, geo_stack);
 
 		// draw all geometry
@@ -90,7 +90,7 @@ int main(int args, char* argv[]) {
 			geo_ptr->draw();
 
 		// draw tool
-		cur_tool->draw(mp);
+		cur_tool->draw();
 
 		// draw console
 		D.render_notransform();

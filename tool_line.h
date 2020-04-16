@@ -11,6 +11,9 @@
 
 class tool_line : public tool {
 private:
+	std::optional<pt> cur;
+	pt cur_mp;
+
 	void start(const pt& p) { cur = std::make_optional(p); }
 	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
 		if (cur) {
@@ -22,29 +25,25 @@ private:
 			cur = std::nullopt;
 		}
 	}
-	std::optional<pt> cur;
 
 public:
 	tool_line() : cur(std::nullopt) { print_tool_name("Line Segment"); }
-	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack,
-											 pt mp) {
-		start(mp);
+	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {
+		start(cur_mp);
 	}
-	virtual void l_release(std::vector<std::unique_ptr<geometry>>& geo_stack,
-												 pt mp) {
-		end(geo_stack, mp);
+	virtual void l_release(std::vector<std::unique_ptr<geometry>>& geo_stack) {
+		end(geo_stack, cur_mp);
 	}
-	virtual void r_click(std::vector<std::unique_ptr<geometry>>& geo_stack,
-											 pt mp) {}
-	virtual void r_release(std::vector<std::unique_ptr<geometry>>& geo_stack,
-												 pt mp) {}
-	virtual void draw(pt mp) const {
+	virtual void r_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {}
+	virtual void r_release(std::vector<std::unique_ptr<geometry>>& geo_stack) {}
+	virtual void draw() const {
 		if (cur) {
 			col::col prev = col::cur_col;
 			col::red.set();
-			line_segment cur_ls(cur.value(), mp);
+			line_segment cur_ls(cur.value(), cur_mp);
 			cur_ls.draw();
 			prev.set();
 		}
 	}
+	virtual void update(const pt& mp) { cur_mp = mp; }
 };

@@ -39,25 +39,30 @@ public:
 	void operator=(const tool_handler&) = delete;
 
 	void update(const pt& mp, std::vector<std::unique_ptr<geometry>>& geo_stack) {
+		// handle tool-changing events
 		if (kh.pressed('1'))
 			cur = std::make_unique<tool_line>();
 		else if (kh.pressed('2'))
 			cur = std::make_unique<tool_circle>();
 
+		// update the tool
+		cur->update(mp);
+
+		// handle events to the tools
 		// if mouse button pressed, pass it on to tool
 		if (mh.pressed(mb_left)) {
-			cur->l_click(geo_stack, mp);
+			cur->l_click(geo_stack);
 		}
 		if (mh.pressed(mb_right)) {
-			cur->r_click(geo_stack, mp);
+			cur->r_click(geo_stack);
 		}
 
 		// if mouse button released, pass it on to tool
 		if (mh.released(mb_left)) {
-			cur->l_release(geo_stack, mp);
+			cur->l_release(geo_stack);
 		}
 		if (mh.released(mb_right)) {
-			cur->r_release(geo_stack, mp);
+			cur->r_release(geo_stack);
 		}
 	}
 };

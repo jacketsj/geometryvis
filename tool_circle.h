@@ -11,6 +11,9 @@
 
 class tool_circle : public tool {
 private:
+	std::optional<pt> cur;
+	pt cur_mp;
+
 	void start(const pt& p) { cur = std::make_optional(p); }
 	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
 		if (cur) {
@@ -23,29 +26,25 @@ private:
 			cur = std::nullopt;
 		}
 	}
-	std::optional<pt> cur;
 
 public:
 	tool_circle() : cur(std::nullopt) { print_tool_name("Circle"); }
-	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack,
-											 pt mp) {
-		start(mp);
+	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {
+		start(cur_mp);
 	}
-	virtual void l_release(std::vector<std::unique_ptr<geometry>>& geo_stack,
-												 pt mp) {
-		end(geo_stack, mp);
+	virtual void l_release(std::vector<std::unique_ptr<geometry>>& geo_stack) {
+		end(geo_stack, cur_mp);
 	}
-	virtual void r_click(std::vector<std::unique_ptr<geometry>>& geo_stack,
-											 pt mp) {}
-	virtual void r_release(std::vector<std::unique_ptr<geometry>>& geo_stack,
-												 pt mp) {}
-	virtual void draw(pt mp) const {
+	virtual void r_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {}
+	virtual void r_release(std::vector<std::unique_ptr<geometry>>& geo_stack) {}
+	virtual void draw() const {
 		if (cur) {
 			col::col prev = col::cur_col;
 			col::red.set();
-			circle cur_circ(cur.value(), dist2(cur.value(), mp));
+			circle cur_circ(cur.value(), dist2(cur.value(), cur_mp));
 			cur_circ.draw();
 			prev.set();
 		}
 	}
+	virtual void update(const pt& mp) { cur_mp = mp; }
 };
