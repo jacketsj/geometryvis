@@ -52,6 +52,7 @@ struct dim {
 		slIdentity();
 		slScale(scale_x, scale_y);
 	};
+	void render_notransform() { slIdentity(); };
 	static int round(double d) { return int(d + 0.5 + eps); }
 	pt reverse_transform(double x0, double y0) {
 		// return pt(round(x0 / scale_x), round(y0 / scale_y));
@@ -124,7 +125,8 @@ int main(int args, char* argv[]) {
 		// draw tool
 		cur_tool->draw(mp);
 
-		// draw text
+		// draw console
+		D.render_notransform();
 		con.draw();
 
 		// draw everything
