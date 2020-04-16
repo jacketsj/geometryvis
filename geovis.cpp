@@ -3,9 +3,9 @@
 #include <optional>
 #include <set>
 #include <sl.h>
-#include <tuple>
 #include <vector>
 
+#include "button_handler.h"
 #include "circle.h"
 #include "col.h"
 #include "console.h"
@@ -14,29 +14,10 @@
 #include "point.h"
 #include "tool.h"
 #include "tool_circle.h"
+#include "tool_handler.h"
 #include "tool_line.h"
 
 const double eps = 1e-7;
-
-// map and set are slow for small values
-struct mouse_watcher {
-	std::map<char, bool> cur, prev; // just pressed std::set<char> watching;
-	std::set<char> watching;
-	void watch(char c) { watching.insert(c); }
-	void unwatch(char c) { watching.erase(c); }
-	void update() {
-		prev = cur;
-		for (char c : watching) {
-			cur[c] = slGetMouseButton(c);
-		}
-	}
-	bool pressed(char c) { return cur[c] && !prev[c]; }
-	bool released(char c) { return !cur[c] && prev[c]; }
-	bool down(char c) { return cur[c]; }
-};
-
-const int mb_left = SL_MOUSE_BUTTON_LEFT;
-const int mb_right = SL_MOUSE_BUTTON_RIGHT;
 
 struct dim {
 	// internal dimensions
@@ -61,10 +42,6 @@ struct dim {
 	}
 };
 
-namespace tool_handler {
-std::unique_ptr<tool> init() { return std::make_unique<tool_circle>(); }
-} // namespace tool_handler
-
 int main(int args, char* argv[]) {
 	// dimensions of window
 	dim D(1280, 720);
@@ -73,12 +50,13 @@ int main(int args, char* argv[]) {
 	slWindow(D.x, D.y, "Geometry Vis", false);
 	slSetTextAlign(SL_ALIGN_CENTER);
 
-	mouse_watcher mw;
-	mw.watch(mb_left);
-	mw.watch(mb_right);
+	button_handler& mh = button_handler::get_mouse_handler();
+	button_handler& kh = button_handler::get_key_handler();
 
 	std::vector<std::unique_ptr<geometry>> geo_stack;
-	std::unique_ptr<tool> cur_tool = tool_handler::init();
+
+	tool_handler& th = tool_handler::get();
+	std::unique_ptr<tool>& cur_tool = th.cur;
 
 	col::blue.set();
 
@@ -94,8 +72,9 @@ int main(int args, char* argv[]) {
 		// update the scaling accordingly
 		D.render_transform();
 
-		// update mouse watcher
-		mw.update();
+		// update mouse handler and key handler
+		mh.update();
+		kh.update();
 
 		// get mouse x and y
 		int mx = slGetMouseX();
@@ -103,21 +82,8 @@ int main(int args, char* argv[]) {
 		// world coordinate mouse point
 		pt mp = D.reverse_transform(mx, my);
 
-		// if mouse button released, pass it on to tool
-		if (mw.released(mb_left)) {
-			cur_tool->l_release(geo_stack, mp);
-		}
-		if (mw.released(mb_right)) {
-			cur_tool->r_release(geo_stack, mp);
-		}
-
-		// if mouse button pressed, pass it on to tool
-		if (mw.pressed(mb_left)) {
-			cur_tool->l_click(geo_stack, mp);
-		}
-		if (mw.pressed(mb_right)) {
-			cur_tool->r_click(geo_stack, mp);
-		}
+		// update tool handler
+		th.update(mp, geo_stack);
 
 		// draw all geometry
 		for (auto& geo_ptr : geo_stack)
