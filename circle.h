@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <sl.h>
+#include <string>
 #include <vector>
 
 #include "geometry.h"
@@ -17,6 +18,8 @@ public:
 	int r2;
 	circle(int x, int y, int r2) : p(x, y), r2(r2) {}
 	circle(const pt& p, int r2) : p(p), r2(r2) {}
+	circle(const pt& p, const pt& pr) : p(p), r2(dist2(pr, p)) {}
+	static std::string name() { return "circle"; }
 	virtual void draw() const { slCircleFill(p.x, p.y, sqrt(double(r2)), r2); }
 	virtual std::vector<int> comp_list() const {
 		std::vector<int> ret = p.comp_list();

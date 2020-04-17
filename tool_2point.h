@@ -18,8 +18,8 @@ private:
 	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
 		if (cur) {
 			std::stringstream ss;
-			ss << "created " << typeid(T).name() << ": " << cur.value().to_string()
-				 << "--" << p.to_string();
+			ss << "created " << T::name() << ": " << cur.value().to_string() << "--"
+				 << p.to_string();
 			console::get().print(ss.str());
 			geo_stack.push_back(std::make_unique<T>(cur.value(), p));
 			cur = std::nullopt;
@@ -27,7 +27,7 @@ private:
 	}
 
 public:
-	tool_2point() : cur(std::nullopt) { print_tool_name(typeid(T).name()); }
+	tool_2point() : cur(std::nullopt) { print_tool_name(T::name()); }
 	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {
 		start(cur_mp);
 	}

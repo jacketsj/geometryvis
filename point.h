@@ -15,6 +15,7 @@ public:
 	int x, y;
 	pt(int x, int y) : x(x), y(y) {}
 	pt() : x(0), y(0) {}
+	static std::string name() { return "point"; }
 	int norm2() const { return x * x + y * y; }
 	friend int dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
 	virtual std::vector<int> comp_list() const { return {x, y}; }
