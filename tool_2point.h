@@ -9,7 +9,7 @@
 #include "console.h"
 #include "point.h"
 
-class tool_circle : public tool {
+template <typename T> class tool_2point : public tool {
 private:
 	std::optional<pt> cur;
 	pt cur_mp;
@@ -18,16 +18,16 @@ private:
 	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
 		if (cur) {
 			std::stringstream ss;
-			ss << "created circle: (" << cur.value().to_string() << ")--"
-				 << p.to_string();
+			ss << "created " << typeid(T).name() << ": " << cur.value().to_string()
+				 << "--" << p.to_string();
 			console::get().print(ss.str());
-			geo_stack.push_back(std::make_unique<circle>(cur.value(), p));
+			geo_stack.push_back(std::make_unique<T>(cur.value(), p));
 			cur = std::nullopt;
 		}
 	}
 
 public:
-	tool_circle() : cur(std::nullopt) { print_tool_name("Circle"); }
+	tool_2point() : cur(std::nullopt) { print_tool_name(typeid(T).name()); }
 	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {
 		start(cur_mp);
 	}
@@ -40,8 +40,8 @@ public:
 		if (cur) {
 			col::col prev = col::cur_col;
 			col::red.set();
-			circle cur_circ(cur.value(), cur_mp);
-			cur_circ.draw();
+			T cur_ls(cur.value(), cur_mp);
+			cur_ls.draw();
 			prev.set();
 		}
 	}

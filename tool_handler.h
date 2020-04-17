@@ -3,10 +3,11 @@
 #include <memory>
 
 #include "button_handler.h"
+#include "circle.h"
+#include "line.h"
 #include "point.h"
 #include "tool.h"
-#include "tool_circle.h"
-#include "tool_line.h"
+#include "tool_2point.h"
 
 class tool_handler {
 public:
@@ -41,9 +42,9 @@ public:
 	void update(const pt& mp, std::vector<std::unique_ptr<geometry>>& geo_stack) {
 		// handle tool-changing events
 		if (kh.pressed('1'))
-			cur = std::make_unique<tool_line>();
+			cur = std::make_unique<tool_2point<line_segment>>();
 		else if (kh.pressed('2'))
-			cur = std::make_unique<tool_circle>();
+			cur = std::make_unique<tool_2point<circle>>();
 
 		// update the tool
 		cur->update(mp);
