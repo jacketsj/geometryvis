@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "button_handler.h"
+#include "canvas.h"
 #include "circle.h"
 #include "col.h"
 #include "console.h"
@@ -13,9 +14,7 @@
 #include "line.h"
 #include "point.h"
 #include "tool.h"
-#include "tool_circle.h"
 #include "tool_handler.h"
-#include "tool_line.h"
 
 const double eps = 1e-7;
 
@@ -53,7 +52,7 @@ int main(int args, char* argv[]) {
 	button_handler& mh = button_handler::get_mouse_handler();
 	button_handler& kh = button_handler::get_key_handler();
 
-	std::vector<std::unique_ptr<geometry>> geo_stack;
+	canvas can;
 
 	tool_handler& th = tool_handler::get();
 	std::unique_ptr<tool>& cur_tool = th.cur;
@@ -83,11 +82,10 @@ int main(int args, char* argv[]) {
 		pt mp = D.reverse_transform(mx, my);
 
 		// update tool handler (which also updates tool)
-		th.update(mp, geo_stack);
+		th.update(can, mp);
 
 		// draw all geometry
-		for (auto& geo_ptr : geo_stack)
-			geo_ptr->draw();
+		can.draw();
 
 		// draw tool
 		cur_tool->draw();

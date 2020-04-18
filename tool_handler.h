@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "button_handler.h"
+#include "canvas.h"
 #include "circle.h"
 #include "line.h"
 #include "point.h"
@@ -18,7 +19,7 @@ private:
 	button_handler& kh;
 
 	tool_handler()
-			: cur(std::make_unique<tool_circle>()),
+			: cur(std::make_unique<tool_2point<circle>>()),
 				mh(button_handler::get_mouse_handler()),
 				kh(button_handler::get_key_handler()) {
 		for (char i = 0; i <= 9; ++i)
@@ -39,7 +40,7 @@ public:
 	tool_handler(const tool_handler&) = delete;
 	void operator=(const tool_handler&) = delete;
 
-	void update(const pt& mp, std::vector<std::unique_ptr<geometry>>& geo_stack) {
+	void update(canvas& can, const pt& mp) {
 		// handle tool-changing events
 		if (kh.pressed('1'))
 			cur = std::make_unique<tool_2point<line_segment>>();
@@ -47,23 +48,23 @@ public:
 			cur = std::make_unique<tool_2point<circle>>();
 
 		// update the tool
-		cur->update(mp);
+		cur->update(can, mp);
 
 		// handle events to the tools
 		// if mouse button pressed, pass it on to tool
 		if (mh.pressed(mb_left)) {
-			cur->l_click(geo_stack);
+			cur->l_click(can);
 		}
 		if (mh.pressed(mb_right)) {
-			cur->r_click(geo_stack);
+			cur->r_click(can);
 		}
 
 		// if mouse button released, pass it on to tool
 		if (mh.released(mb_left)) {
-			cur->l_release(geo_stack);
+			cur->l_release(can);
 		}
 		if (mh.released(mb_right)) {
-			cur->r_release(geo_stack);
+			cur->r_release(can);
 		}
 	}
 };

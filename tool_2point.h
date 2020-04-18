@@ -15,27 +15,23 @@ private:
 	pt cur_mp;
 
 	void start(const pt& p) { cur = std::make_optional(p); }
-	void end(std::vector<std::unique_ptr<geometry>>& geo_stack, const pt& p) {
+	void end(canvas& can, const pt& p) {
 		if (cur) {
 			std::stringstream ss;
 			ss << "created " << T::name() << ": " << cur.value().to_string() << "--"
 				 << p.to_string();
 			console::get().print(ss.str());
-			geo_stack.push_back(std::make_unique<T>(cur.value(), p));
+			can.push<T>(cur.value(), p);
 			cur = std::nullopt;
 		}
 	}
 
 public:
 	tool_2point() : cur(std::nullopt) { print_tool_name(T::name()); }
-	virtual void l_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {
-		start(cur_mp);
-	}
-	virtual void l_release(std::vector<std::unique_ptr<geometry>>& geo_stack) {
-		end(geo_stack, cur_mp);
-	}
-	virtual void r_click(std::vector<std::unique_ptr<geometry>>& geo_stack) {}
-	virtual void r_release(std::vector<std::unique_ptr<geometry>>& geo_stack) {}
+	virtual void l_click(canvas& can) { start(cur_mp); }
+	virtual void l_release(canvas& can) { end(can, cur_mp); }
+	virtual void r_click(canvas& can) {}
+	virtual void r_release(canvas& can) {}
 	virtual void draw() const {
 		if (cur) {
 			col::col prev = col::cur_col;
@@ -45,5 +41,5 @@ public:
 			prev.set();
 		}
 	}
-	virtual void update(const pt& mp) { cur_mp = mp; }
+	virtual void update(canvas& can, const pt& mp) { cur_mp = mp; }
 };
