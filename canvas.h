@@ -20,4 +20,21 @@ public:
 		for (auto& geo_ptr : geo_stack)
 			geo_ptr->draw();
 	}
+
+	template <typename T> std::vector<std::reference_wrapper<T>> filter_get() {
+		std::vector<std::reference_wrapper<T>> ret;
+		for (std::unique_ptr<geometry>& geo : geo_stack) {
+			try {
+				T& geo_casted = dynamic_cast<T&>(*geo);
+				ret.push_back(geo_casted);
+			} catch (std::bad_cast& bc) {
+				// skip
+			}
+		}
+		return ret;
+	}
+
+	std::vector<std::reference_wrapper<geometry>> get() {
+		return filter_get<geometry>();
+	}
 };
