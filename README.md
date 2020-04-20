@@ -2,6 +2,8 @@
 This is a library/application for visualizing geometry algorithms.
 Current in development.
 
+![The smaller circles were created with the line intersection algorithm.](screenshots/line_intersection.png?raw=true "GeoVis - Line Intersection")
+
 ## Usage
 
 There are different tools available.
