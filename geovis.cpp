@@ -18,11 +18,11 @@
 
 const double eps = 1e-7;
 
-struct dim {
+struct dimensions {
 	// internal dimensions
 	int x, y;
 	double scale_x, scale_y;
-	dim(int x, int y) : x(x), y(y), scale_x(1), scale_y(1) {}
+	dimensions(int x, int y) : x(x), y(y), scale_x(1), scale_y(1) {}
 	void update() {
 		int x0, y0;
 		slGetWindowSize(&x0, &y0);
@@ -35,27 +35,26 @@ struct dim {
 	};
 	void render_notransform() { slIdentity(); };
 	static int round(double d) { return int(d + 0.5 + eps); }
-	pt reverse_transform(double x0, double y0) {
-		// return pt(round(x0 / scale_x), round(y0 / scale_y));
-		return pt(x0 / scale_x, y0 / scale_y);
+	pt<double> reverse_transform(double x0, double y0) {
+		// return pt<double>(round(x0 / scale_x), round(y0 / scale_y));
+		return pt<double>(x0 / scale_x, y0 / scale_y);
 	}
 };
 
 int main(int args, char* argv[]) {
 	// dimensions of window
-	dim D(1280, 720);
+	dimensions dim(1280, 720);
 
 	// set up our window and a few resources we need
-	slWindow(D.x, D.y, "Geometry Vis", false);
+	slWindow(dim.x, dim.y, "Geometry Vis", false);
 	slSetTextAlign(SL_ALIGN_CENTER);
 
 	button_handler& mh = button_handler::get_mouse_handler();
 	button_handler& kh = button_handler::get_key_handler();
 
-	canvas can;
+	canvas<double> can;
 
 	tool_handler& th = tool_handler::get();
-	std::unique_ptr<tool>& cur_tool = th.cur;
 
 	col::blue.set();
 
@@ -66,20 +65,20 @@ int main(int args, char* argv[]) {
 		col::cur_col.set();
 
 		// update the window dimensions
-		D.update();
+		dim.update();
 
 		// update the scaling accordingly
-		D.render_transform();
+		dim.render_transform();
 
 		// update mouse handler and key handler
 		mh.update();
 		kh.update();
 
 		// get mouse x and y
-		int mx = slGetMouseX();
-		int my = slGetMouseY();
+		double mx = slGetMouseX();
+		double my = slGetMouseY();
 		// world coordinate mouse point
-		pt mp = D.reverse_transform(mx, my);
+		pt<double> mp = dim.reverse_transform(mx, my);
 
 		// update tool handler (which also updates tool)
 		th.update(can, mp);
@@ -88,10 +87,10 @@ int main(int args, char* argv[]) {
 		can.draw();
 
 		// draw tool
-		cur_tool->draw();
+		th.draw();
 
 		// draw console
-		D.render_notransform();
+		dim.render_notransform();
 		con.draw();
 
 		// draw everything

@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "analysis_line_intersection.h"
 #include "button_handler.h"
 #include "canvas.h"
 #include "circle.h"
@@ -11,15 +12,17 @@
 #include "tool_2point.h"
 
 class tool_handler {
+	typedef double D;
+
 public:
-	std::unique_ptr<tool> cur;
+	std::unique_ptr<tool<D>> cur;
 
 private:
 	button_handler& mh;
 	button_handler& kh;
 
 	tool_handler()
-			: cur(std::make_unique<tool_2point<circle>>()),
+			: cur(std::make_unique<tool_2point<circle<D>, D>>()),
 				mh(button_handler::get_mouse_handler()),
 				kh(button_handler::get_key_handler()) {
 		for (char i = 0; i <= 9; ++i)
@@ -40,12 +43,14 @@ public:
 	tool_handler(const tool_handler&) = delete;
 	void operator=(const tool_handler&) = delete;
 
-	void update(canvas& can, const pt& mp) {
+	void update(canvas<D>& can, const pt<D>& mp) {
 		// handle tool-changing events
 		if (kh.pressed('1'))
-			cur = std::make_unique<tool_2point<line_segment>>();
+			cur = std::make_unique<tool_2point<line_segment<D>, D>>();
 		else if (kh.pressed('2'))
-			cur = std::make_unique<tool_2point<circle>>();
+			cur = std::make_unique<tool_2point<circle<D>, D>>();
+		else if (kh.pressed('3'))
+			cur = std::make_unique<analysis_line_intersection<D>>();
 
 		// update the tool
 		cur->update(can, mp);
@@ -67,4 +72,6 @@ public:
 			cur->r_release(can);
 		}
 	}
+
+	void draw() { cur->draw(); }
 };

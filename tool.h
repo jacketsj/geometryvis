@@ -7,7 +7,7 @@
 #include "canvas.h"
 #include "point.h"
 
-class tool {
+template <typename D> class tool {
 protected:
 	virtual void print_tool_name(const std::string& tool_name) {
 		console::get().print(std::string("Tool: ") + tool_name);
@@ -17,10 +17,10 @@ protected:
 	}
 
 public:
-	virtual void l_click(canvas& can) = 0;
-	virtual void l_release(canvas& can) = 0;
-	virtual void r_click(canvas& can) = 0;
-	virtual void r_release(canvas& can) = 0;
+	virtual void l_click(canvas<D>& can) = 0;
+	virtual void l_release(canvas<D>& can) = 0;
+	virtual void r_click(canvas<D>& can) = 0;
+	virtual void r_release(canvas<D>& can) = 0;
 	virtual void draw() const = 0;
-	virtual void update(canvas& c, const pt& mp) = 0;
+	virtual void update(canvas<D>& c, const pt<D>& mp) = 0;
 };
