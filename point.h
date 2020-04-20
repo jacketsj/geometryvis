@@ -36,7 +36,10 @@ public:
 	}
 
 	virtual std::vector<D> comp_list() const { return {x, y}; }
-	virtual void draw() const { slPoint(x, y); }
+	virtual void draw() const {
+		// slPoint(x, y);
+		slCircleFill(x, y, 4, 8);
+	}
 	std::string to_string() const {
 		std::stringstream ss;
 		ss << "(" << x << ',' << y << ")";

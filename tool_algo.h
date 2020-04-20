@@ -13,9 +13,13 @@ private:
 
 protected:
 	virtual void run_algo(canvas<D>& can, const pt<D>& mp) = 0;
+	virtual std::string name() = 0;
 
 public:
-	virtual void l_click(canvas<D>& can) { run_algo(can, cur_mp); }
+	virtual void l_click(canvas<D>& can) {
+		console::get().print(std::string("Running: ") + name());
+		run_algo(can, cur_mp);
+	}
 	virtual void l_release(canvas<D>& can) {}
 	virtual void r_click(canvas<D>& can) {}
 	virtual void r_release(canvas<D>& can) {}

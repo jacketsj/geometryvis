@@ -10,6 +10,7 @@
 #include "point.h"
 #include "tool.h"
 #include "tool_2point.h"
+#include "tool_point.h"
 
 class tool_handler {
 	typedef double D;
@@ -50,6 +51,8 @@ public:
 		else if (kh.pressed('2'))
 			cur = std::make_unique<tool_2point<circle<D>, D>>();
 		else if (kh.pressed('3'))
+			cur = std::make_unique<tool_point<D>>();
+		else if (kh.pressed('4'))
 			cur = std::make_unique<analysis_line_intersection<D>>();
 
 		// update the tool

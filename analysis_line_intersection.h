@@ -31,8 +31,9 @@ private:
 		return ret;
 	}
 
+protected:
+	virtual std::string name() { return "line segment intersection algorithm"; }
+
 public:
-	analysis_line_intersection() {
-		this->print_tool_name("line segment intersection algorithm");
-	}
+	analysis_line_intersection() { this->print_tool_name(name()); }
 };
