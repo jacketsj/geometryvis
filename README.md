@@ -2,6 +2,14 @@
 This is a library/application for visualizing geometry algorithms.
 Current in development.
 
+## Usage
+
+There are different tools available.
+Each can currently be selected by pressing the corresponding number key:
+1. Draw a line.
+2. Draw a circle.
+3. Find all the pairwise intersections of lines and draw them as circles.
+
 ## Dependencies
 This repo relies on a [modified version of SIGIL](https://github.com/jacketsj/sigil) (Sound, Input, and Graphics Integration Library).
 The modified version was developed in tandem with Geometry Vis.
