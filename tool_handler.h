@@ -11,6 +11,7 @@
 #include "point.h"
 #include "tool.h"
 #include "tool_2point.h"
+#include "tool_console.h"
 #include "tool_point.h"
 
 class tool_handler {
@@ -29,12 +30,14 @@ private:
 				kh(button_handler::get_key_handler()) {
 		for (char i = 0; i <= 9; ++i)
 			kh.watch('0' + i);
+		kh.watch(tilde);
 		mh.watch(mb_left);
 		mh.watch(mb_right);
 	}
 
 	const static int mb_left = SL_MOUSE_BUTTON_LEFT;
 	const static int mb_right = SL_MOUSE_BUTTON_RIGHT;
+	const static int tilde = '`';
 
 public:
 	static tool_handler& get() {
@@ -47,7 +50,9 @@ public:
 
 	void update(canvas<D>& can, const pt<D>& mp) {
 		// handle tool-changing events
-		if (kh.pressed('1'))
+		if (kh.pressed(tilde))
+			cur = std::make_unique<tool_console<D>>();
+		else if (kh.pressed('1'))
 			cur = std::make_unique<tool_point<D>>();
 		else if (kh.pressed('2'))
 			cur = std::make_unique<tool_2point<line_segment<D>, D>>();

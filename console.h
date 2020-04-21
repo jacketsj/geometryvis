@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <limits>
 #include <list>
 #include <memory>
 #include <sl.h>
@@ -16,17 +17,19 @@ struct console_line {
 	std::string s;
 	double expiry;
 	console_line() {}
-	console_line(const std::string& s)
-			: s(s), expiry(slGetTime() + text_lifetime) {}
+	console_line(const std::string& s, bool expires = true)
+			: s(s), expiry(expires ? slGetTime() + text_lifetime
+														 : std::numeric_limits<double>::infinity()) {}
 	bool expired() { return slGetTime() > expiry; }
 	col::col get_col_bg() const {
 		col::col ret = bg_col;
-		ret.a = (expiry - slGetTime()) / text_lifetime;
+		ret.a = std::min(expiry - slGetTime(), text_lifetime) / text_lifetime;
 		return ret;
 	}
 	col::col get_col() const {
 		col::col ret = text_col;
-		ret.a = (expiry - slGetTime()) / text_lifetime / 2.0f;
+		ret.a =
+				std::min(expiry - slGetTime(), text_lifetime) / text_lifetime / 2.0f;
 		return ret;
 	}
 };
@@ -36,10 +39,16 @@ private:
 	const int font_size = 12;
 
 	std::list<console_line> output;
+	std::list<console_line> history;
+	bool display_history;
 	int font;
-	console() { font = slLoadFont("ttf/white_rabbit.ttf"); }
+	console() {
+		display_history = false;
+		font = slLoadFont("ttf/white_rabbit.ttf");
+	}
 
 	const static size_t MAX_LINES = 5;
+	const static size_t MAX_LINES_HISTORY = 100;
 
 	void clean() {
 		while (!output.empty() &&
@@ -66,14 +75,20 @@ public:
 
 	void print(const std::string& s) {
 		output.emplace_back(s);
+		history.emplace_back(s, false);
 		clean();
 	}
+
+	void set_history_display(bool show) { display_history = show; }
 
 	// TODO cleanup
 	void draw() {
 		clean();
 		std::vector<console_line> to_draw;
-		for (auto iter = output.rbegin(); iter != output.rend(); ++iter)
+		std::list<console_line>& current_vis = display_history ? history : output;
+		for (auto iter = current_vis.rbegin();
+				 iter != current_vis.rend() && to_draw.size() <= MAX_LINES_HISTORY;
+				 ++iter)
 			to_draw.push_back(*iter);
 		double margin_x = 4, margin_y = 4;
 		double x, y, dx, dy, width, height;
