@@ -14,10 +14,7 @@ public:
 		console::get().set_history_display(true);
 		this->print_tool_name("console");
 	}
-	~tool_console() {
-		this->print_tool_name("off - console");
-		console::get().set_history_display(false);
-	}
+	~tool_console() { console::get().set_history_display(false); }
 	virtual void l_click(canvas<D>& can) {}
 	virtual void l_release(canvas<D>& can) {}
 	virtual void r_click(canvas<D>& can) {}
