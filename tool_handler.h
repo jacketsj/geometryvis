@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "analysis_convex_hull.h"
 #include "analysis_line_intersection.h"
 #include "button_handler.h"
 #include "canvas.h"
@@ -54,6 +55,8 @@ public:
 			cur = std::make_unique<tool_point<D>>();
 		else if (kh.pressed('4'))
 			cur = std::make_unique<analysis_line_intersection<D>>();
+		else if (kh.pressed('5'))
+			cur = std::make_unique<analysis_convex_hull<D>>();
 
 		// update the tool
 		cur->update(can, mp);

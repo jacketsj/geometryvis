@@ -22,11 +22,14 @@ public:
 	D norm() const { return sqrt(norm2()); }
 	friend D dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
 	friend D dist(const pt& a, const pt& b) { return sqrt(dist2(a, b)); }
-	friend int dir(const pt& a, const pt& b, const pt& c, D eps) {
-		// first or second line is approximately a point
+	friend D turn(const pt& a, const pt& b, const pt& c, D eps) {
 		if (dist(a, b) <= eps || dist(b, c) <= eps)
 			return 0;
-		D rot = cp(b - a, c - a);
+		return cp(b - a, c - a);
+	}
+	friend int dir(const pt& a, const pt& b, const pt& c, D eps) {
+		// first or second line is approximately a point
+		D rot = turn(a, b, c, eps);
 		if (abs(rot) <= eps)
 			return 0;
 		else if (rot > 0)
