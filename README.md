@@ -8,9 +8,11 @@ Current in development.
 
 There are different tools available.
 Each can currently be selected by pressing the corresponding number key:
-1. Draw a line.
-2. Draw a circle.
-3. Find all the pairwise intersections of lines and draw them as circles.
+1. Draw a point.
+2. Draw a line segment.
+3. Draw a circle.
+4. Find the convex hull of all points and draw it as line segments.
+5. Find all the pairwise intersections of line segments and draw them as circles.
 
 ## Dependencies
 This repo relies on a [modified version of SIGIL](https://github.com/jacketsj/sigil) (Sound, Input, and Graphics Integration Library).

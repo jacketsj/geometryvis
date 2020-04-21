@@ -24,7 +24,7 @@ private:
 	button_handler& kh;
 
 	tool_handler()
-			: cur(std::make_unique<tool_2point<circle<D>, D>>()),
+			: cur(std::make_unique<tool_point<D>>()),
 				mh(button_handler::get_mouse_handler()),
 				kh(button_handler::get_key_handler()) {
 		for (char i = 0; i <= 9; ++i)
@@ -48,15 +48,15 @@ public:
 	void update(canvas<D>& can, const pt<D>& mp) {
 		// handle tool-changing events
 		if (kh.pressed('1'))
-			cur = std::make_unique<tool_2point<line_segment<D>, D>>();
-		else if (kh.pressed('2'))
-			cur = std::make_unique<tool_2point<circle<D>, D>>();
-		else if (kh.pressed('3'))
 			cur = std::make_unique<tool_point<D>>();
+		else if (kh.pressed('2'))
+			cur = std::make_unique<tool_2point<line_segment<D>, D>>();
+		else if (kh.pressed('3'))
+			cur = std::make_unique<tool_2point<circle<D>, D>>();
 		else if (kh.pressed('4'))
-			cur = std::make_unique<analysis_line_intersection<D>>();
-		else if (kh.pressed('5'))
 			cur = std::make_unique<analysis_convex_hull<D>>();
+		else if (kh.pressed('5'))
+			cur = std::make_unique<analysis_line_intersection<D>>();
 
 		// update the tool
 		cur->update(can, mp);
