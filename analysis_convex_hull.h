@@ -15,11 +15,11 @@ private:
 	const D isect_rad = 32;
 
 	virtual std::vector<std::unique_ptr<geometry<D>>>
-	analyse(std::vector<std::reference_wrapper<pt<D>>>&& points_ref) {
+	analyse(std::vector<std::reference_wrapper<const pt<D>>>&& points_ref) {
 		const D eps = D(1e-7);
 		std::vector<pt<D>> points;
 		points.reserve(points_ref.size());
-		for (pt<D>& p : points_ref)
+		for (const pt<D>& p : points_ref)
 			points.push_back(p);
 		std::vector<std::unique_ptr<geometry<D>>> ret;
 		if (points.size() <= 1)

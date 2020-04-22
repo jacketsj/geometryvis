@@ -13,6 +13,9 @@ private:
 	bool isect(const pt<D>& p0) const { return dist2(p, p0) <= r2; }
 	bool isect(int x0, int y0) const { return isect(pt<D>(x0, y0)); }
 
+protected:
+	virtual circle* clone_impl() const { return new circle(*this); }
+
 public:
 	pt<D> p;
 	D r2;

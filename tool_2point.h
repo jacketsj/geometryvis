@@ -28,6 +28,7 @@ private:
 
 public:
 	tool_2point() : cur(std::nullopt) { this->print_tool_name(T::name()); }
+	virtual ~tool_2point() {}
 	virtual void l_click(canvas<D>& can) { start(cur_mp); }
 	virtual void l_release(canvas<D>& can) { end(can, cur_mp); }
 	virtual void r_click(canvas<D>& can) {}

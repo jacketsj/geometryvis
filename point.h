@@ -8,6 +8,9 @@
 #include "geometry.h"
 
 template <typename D> class pt : public geometry<D> {
+protected:
+	virtual pt* clone_impl() const { return new pt(*this); }
+
 public:
 	D x, y;
 	pt(D x, D y) : x(x), y(y) {}

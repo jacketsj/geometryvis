@@ -7,6 +7,7 @@
 #include "button_handler.h"
 #include "canvas.h"
 #include "circle.h"
+#include "console.h"
 #include "line.h"
 #include "point.h"
 #include "tool.h"
@@ -33,11 +34,17 @@ private:
 		kh.watch(tilde);
 		mh.watch(mb_left);
 		mh.watch(mb_right);
+		kh.watch(undo);
+		kh.watch(ctrl);
+		kh.watch(shift);
 	}
 
 	const static int mb_left = SL_MOUSE_BUTTON_LEFT;
 	const static int mb_right = SL_MOUSE_BUTTON_RIGHT;
 	const static int tilde = '`';
+	const static int undo = 'Z';
+	const static int ctrl = SL_KEY_LEFT_CONTROL;
+	const static int shift = SL_KEY_LEFT_SHIFT;
 
 public:
 	static tool_handler& get() {
@@ -49,6 +56,12 @@ public:
 	void operator=(const tool_handler&) = delete;
 
 	void update(canvas<D>& can, const pt<D>& mp) {
+		// handle undo/redo
+
+		if (kh.down(ctrl) && kh.down(shift) && kh.pressed(undo))
+			can.redo();
+		else if (kh.down(ctrl) && kh.pressed(undo))
+			can.undo();
 		// handle tool-changing events
 		if (kh.pressed(tilde))
 			cur = std::make_unique<tool_console<D>>();

@@ -7,6 +7,9 @@
 #include "point.h"
 
 template <typename D> class line_segment : public geometry<D> {
+protected:
+	virtual line_segment* clone_impl() const { return new line_segment(*this); }
+
 public:
 	pt<D> p1, p2;
 	line_segment(pt<D> p1, pt<D> p2) : p1(p1), p2(p2) {}

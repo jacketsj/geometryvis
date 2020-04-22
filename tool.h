@@ -17,11 +17,11 @@ protected:
 	}
 
 public:
+	virtual ~tool() {}
 	virtual void l_click(canvas<D>& can) = 0;
 	virtual void l_release(canvas<D>& can) = 0;
 	virtual void r_click(canvas<D>& can) = 0;
 	virtual void r_release(canvas<D>& can) = 0;
 	virtual void draw() const = 0;
 	virtual void update(canvas<D>& c, const pt<D>& mp) = 0;
-	virtual ~tool() {}
 };
