@@ -30,6 +30,7 @@ line_segment<double>::isect(const line_segment<double>& oth) const {
 	// based on UBC ICPC code archive seg_x_seg algorithm:
 	// https://www.dropbox.com/s/0g83z1wh7bmwdu5/codearchive.cpp
 	const double eps = 1e-7;
+	const static bool isect_endpoints = false;
 
 	std::vector<pt<double>> ret;
 
@@ -42,8 +43,17 @@ line_segment<double>::isect(const line_segment<double>& oth) const {
 	};
 
 	bool does_intersect = false;
-	// the four direction checks
+	// easy notation
 	pt<double> l1p1 = p1, l1p2 = p2, l2p1 = oth.p1, l2p2 = oth.p2;
+
+	// if either line is just a point, and endpoints cannot intersect
+	if (!isect_endpoints &&
+			(dist2(l1p1, l1p2) <= eps || dist2(l2p1, l2p2) <= eps)) {
+		does_intersect = false;
+		return ret;
+	}
+
+	// the four direction checks
 	int dir1 = dir(l1p1, l1p2, l2p1, eps), dir2 = dir(l1p1, l1p2, l2p2, eps),
 			dir3 = dir(l2p1, l2p2, l1p1, eps), dir4 = dir(l2p1, l2p2, l1p2, eps);
 	if (dir1 == 0 && dir2 == 0 && dir3 == 0 && dir4 == 0) { // collinear
@@ -51,11 +61,14 @@ line_segment<double>::isect(const line_segment<double>& oth) const {
 			std::swap(l1p1, l1p2);
 		if (cmp_lex(l2p2, l2p1))
 			std::swap(l2p1, l2p2);
-		does_intersect = !cmp_lex(l2p2, l1p1) && !cmp_lex(l1p2, l2p1);
+		if (isect_endpoints)
+			does_intersect = !cmp_lex(l2p2, l1p1) && !cmp_lex(l1p2, l2p1);
+		else
+			does_intersect = cmp_lex(l1p1, l2p2) && cmp_lex(l2p1, l1p2);
 		if (does_intersect) {
 			// find the bounds of the intersection
-			pt<double>& i1 = l1p1; // rightmost of the left endpoints
-			pt<double>& i2 = l1p2; // leftmost of the right endpoints
+			pt<double>& i1 = l1p1; // lexical rightmost of the left endpoints
+			pt<double>& i2 = l1p2; // lexical leftmost of the right endpoints
 			if (cmp_lex(l1p1, l2p1))
 				i1 = l2p1;
 			if (cmp_lex(l2p2, l1p2))
@@ -64,7 +77,10 @@ line_segment<double>::isect(const line_segment<double>& oth) const {
 			ret.push_back(i2);
 		}
 	} else {
-		does_intersect = dir1 * dir2 <= 0 && dir3 * dir4 <= 0;
+		if (isect_endpoints)
+			does_intersect = dir1 * dir2 <= 0 && dir3 * dir4 <= 0;
+		else
+			does_intersect = dir1 * dir2 < 0 && dir3 * dir4 < 0;
 		if (does_intersect) {
 			// find the intersection of the full lines
 			// y = (s/n)*x + b
