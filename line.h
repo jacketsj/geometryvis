@@ -37,9 +37,9 @@ line_segment<double>::isect(const line_segment<double>& oth) const {
 	// define a canonical order on points
 	auto cmp_lex = [&](const pt<double>& a, const pt<double>& b) {
 		// ordered first by y coordinate, then by x coordinate
-		if ((a.x - b.x) <= eps)
+		if ((a.x - b.x) <= 2 * eps)
 			return a.y < b.y - eps;
-		return a.x < b.x;
+		return a.x < b.x - eps;
 	};
 
 	bool does_intersect = false;
