@@ -22,6 +22,8 @@ public:
 		return ret;
 	}
 	std::vector<pt<D>> isect(const line_segment<D>& oth) const;
+
+	pt<D> dif() const { return p2 - p1; }
 };
 
 template <>

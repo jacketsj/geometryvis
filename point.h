@@ -19,8 +19,14 @@ public:
 
 	friend D dp(const pt& a, const pt& b) { return a.x * b.x + a.y * b.y; }
 	friend D cp(const pt& a, const pt& b) { return a.x * b.y - a.y * b.x; }
-	pt operator-(const pt& oth) const { return pt(x - oth.x, y - oth.y); }
 	pt operator+(const pt& oth) const { return pt(x + oth.x, y + oth.y); }
+	pt operator-(const pt& oth) const { return pt(x - oth.x, y - oth.y); }
+	pt operator*(const D& scale) const { return pt(x * scale, y * scale); }
+	pt operator/(const D& scale) const { return pt(x / scale, y / scale); }
+	void operator+=(const pt& oth) { (*this) = (*this) + oth; }
+	void operator-=(const pt& oth) { (*this) = (*this) - oth; }
+	void operator*=(const D& scale) { (*this) = (*this) * scale; }
+	void operator/=(const D& scale) { (*this) = (*this) / scale; }
 	D norm2() const { return x * x + y * y; }
 	D norm() const { return sqrt(norm2()); }
 	friend D dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
@@ -40,6 +46,12 @@ public:
 		else
 			return -1;
 	}
+
+	pt ortho_cw() const { return pt(y, -x); }
+	pt ortho_ccw() const { return pt(-y, x); }
+	pt normalize() const { return (*this) / norm(); }
+
+	static pt origin() { return pt(0, 0); }
 
 	virtual std::vector<D> comp_list() const { return {x, y}; }
 	virtual void draw() const {

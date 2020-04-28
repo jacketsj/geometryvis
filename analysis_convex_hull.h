@@ -12,8 +12,6 @@
 template <typename D>
 class analysis_convex_hull : public tool_algo_analysis<pt<D>, D> {
 private:
-	const D isect_rad = 32;
-
 	virtual std::vector<std::unique_ptr<geometry<D>>>
 	analyse(std::vector<std::reference_wrapper<const pt<D>>>&& points_ref) {
 		const D eps = D(1e-7);
