@@ -32,15 +32,40 @@ public:
 	}
 	D rad() const { return sqrt(r2); }
 	line_segment<D> tangent_line(const circle& origin, bool cw = false) const {
-		pt<D> dif_centres_norm = (p - origin.p).normalize();
-		if (cw)
-			dif_centres_norm = dif_centres_norm.ortho_cw();
-		else
-			dif_centres_norm = dif_centres_norm.ortho_ccw();
-		pt<D> start = origin.p, end = p;
-		end += (dif_centres_norm * rad());
-		start += (dif_centres_norm * origin.rad());
-		return line_segment<D>(start, end);
+		// based on UBC Code Archive code
+		auto polar = [](const D& rho, const D& theta) {
+			return pt<D>(rho * cos(theta), rho * sin(theta));
+		};
+		auto circle_tangent = [&](D r1, D r2, D d,
+															int k) { // use the fcn below
+			D dr = (k & 2) ? (-r1 - r2) : (r2 - r1);
+			D t = asin(dr / d);
+			pt<D> p1 = polar(r1, M_PI / 2 + t), p2 = polar(r2, M_PI / 2 + t);
+			if (k & 2)
+				p2 *= -1;
+			p2 += pt<D>(d, 0);
+			if (k & 1) {
+				p1 = pt<D>(p1.x, -p1.y);
+				p2 = pt<D>(p2.x, -p2.y);
+			}
+			return std::make_pair(p1, p2);
+		};
+		// tested 2008wf conveyor; tangent of 2 circles; CAUTION: INTERSECTION IS
+		// BAD k=0 top-top, k=1 bot-bot, k=2 top-bot, k=3 bot-top. Also works for
+		// points.
+		auto circle_tangent2 = [&](pt<D> p1, D r1, pt<D> p2, D r2, int k) {
+			// translate/rotate so c1 at (0,0), c2 at x-axis
+			pt<D> d = p2 - p1;
+			std::pair<pt<D>, pt<D>> p = circle_tangent(r1, r2, d.norm(), k);
+			d = d.normalize();
+			p.first *= d;
+			p.second *= d;
+			p.first += p1;
+			p.second += p1;
+			return p;
+		};
+		auto res = circle_tangent2(origin.p, origin.rad(), p, rad(), 0);
+		return line_segment<D>(res.first, res.second);
 	}
 
 	pt<D> tangent_line_dif(const circle& origin, bool cw = false) const {

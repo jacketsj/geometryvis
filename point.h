@@ -23,10 +23,14 @@ public:
 	pt operator-(const pt& oth) const { return pt(x - oth.x, y - oth.y); }
 	pt operator*(const D& scale) const { return pt(x * scale, y * scale); }
 	pt operator/(const D& scale) const { return pt(x / scale, y / scale); }
+	pt operator*(const pt<D>& oth) const {
+		return pt(x * oth.x - y * oth.y, x * oth.y + y * oth.x);
+	}
 	void operator+=(const pt& oth) { (*this) = (*this) + oth; }
 	void operator-=(const pt& oth) { (*this) = (*this) - oth; }
 	void operator*=(const D& scale) { (*this) = (*this) * scale; }
 	void operator/=(const D& scale) { (*this) = (*this) / scale; }
+	void operator*=(const pt<D>& oth) { (*this) = (*this) * oth; }
 	D norm2() const { return x * x + y * y; }
 	D norm() const { return sqrt(norm2()); }
 	friend D dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
