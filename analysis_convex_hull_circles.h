@@ -41,27 +41,36 @@ private:
 		std::vector<circle<D>> hull;
 		do {
 			hull.push_back(circles[prev]);
+			// if (hull.size() > 1)
 			remove(prev);
 			circle<D>& last = hull.back();
 			size_t next = 0;
-			for (size_t i = 1; i < circles.size(); ++i) {
-				if (circles[i].inside(circles[next], eps))
-					continue;
-				else if (circles[next].inside(circles[i], eps)) {
-					next = i;
-					continue;
-				}
-				int d = dir(pt<D>::origin(), circles[i].tangent_line_dif(last),
-										circles[next].tangent_line_dif(last), eps);
+			// is a better than b
+			auto better_circle = [&](circle<D>& a, circle<D>& b) {
+				// if (prev == i && hull.size() <= 1)
+				// 	continue;
+				if (a.inside(b, eps))
+					return false;
+				else if (b.inside(a, eps))
+					return true;
+				int d = dir(pt<D>::origin(), a.tangent_line_dif(last),
+										b.tangent_line_dif(last), eps);
 				if (d == 0) {
-					if (circles[i].tangent_line_dif(last).norm2() >
-							circles[next].tangent_line_dif(last).norm2()) {
-						next = i;
+					if (a.tangent_line_dif(last).norm2() >
+							b.tangent_line_dif(last).norm2()) {
+						return true;
 					}
 				} else if (d < 0) {
-					next = i;
+					return true;
 				}
+				return false;
+			};
+			for (size_t i = 1; i < circles.size(); ++i) {
+				if (better_circle(circles[i], circles[next]))
+					next = i;
 			}
+			if (better_circle(hull[0], circles[next]))
+				break;
 			prev = next;
 		} while (circles.size() > 0 && dist2(circles[prev].p, hull[0].p) > eps);
 		for (size_t i = 1; i < hull.size(); ++i)
