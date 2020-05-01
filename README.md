@@ -24,7 +24,7 @@ The installation instructions for SIGIL are quite outdated, so use these steps:
 ```
 sudo apt install libalut-dev
 ```
-2. Clone the [modified SIGIL source code](https://github.com/jacketsj/sigil). This should also be possible with a simple `git submodule update`.
+2. Clone the [modified SIGIL source code](https://github.com/jacketsj/sigil). This should also be possible with a simple `git submodule update --init --recursive`.
 3. Build SIGIL according loosely according to the instructions from [this thread](https://openeuphoria.org/forum/133840.wc) (saved in wayback machine april 13 2020), which are as follows:
 ```
 sudo apt install libfreetype6-dev libglew-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev 
