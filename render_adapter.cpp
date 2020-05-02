@@ -12,22 +12,33 @@ void render_adapter::set_color(const col::col& c) {
 void render_adapter::draw_line(const pt<double>& p1, const pt<double>& p2,
 															 const properties& prop) {
 	set_color(prop.c);
+	// TODO handle size (thickness)
 	slLine(p1.x, p1.y, p2.x, p2.y);
 }
 void render_adapter::draw_circle(const pt<double>& p, const double& r,
 																 const properties& prop) {
 	set_color(prop.c);
-	slCircleOutline(p.x, p.y, r, int(r * r));
+	if (prop.fill)
+		slCircleFill(p.x, p.y, r, int(r * r));
+	else {
+		// TODO handle size (thickness)
+		slCircleOutline(p.x, p.y, r, int(r * r));
+	}
 }
 void render_adapter::draw_point(const pt<double>& p, const properties& prop) {
 	set_color(prop.c);
 	// slPoint(p.x, p.y);
-	slCircleFill(p.x, p.y, 4, 8);
+	slCircleFill(p.x, p.y, prop.size, 2 * prop.size);
 }
 void render_adapter::draw_rect(const pt<double>& centre, const pt<double>& size,
 															 const properties& prop) {
 	set_color(prop.c);
-	slRectangleFill(centre.x, centre.y, size.x, size.y);
+	if (prop.fill)
+		slRectangleFill(centre.x, centre.y, size.x, size.y);
+	else {
+		// TODO handle size (thickness)
+		slRectangleOutline(centre.x, centre.y, size.x, size.y);
+	}
 }
 pt<double> render_adapter::get_text_dimensions(const std::string& s) {
 	double width = slGetTextWidth(s.c_str());

@@ -68,6 +68,7 @@ void console::draw() {
 		top += height;
 		properties prop;
 		prop.c = l.get_col_bg();
+		prop.fill = true;
 		rect_with_coords(x - dx / 2, y - dy, width + dx, height + dy / 2, prop);
 		prop.c = l.get_col();
 		prop.font_size = 12;
