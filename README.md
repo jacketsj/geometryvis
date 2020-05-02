@@ -8,6 +8,8 @@ Current in development.
 
 There are different tools available.
 Each can currently be selected by pressing the corresponding key:
+- "S": Selection tool.
+- "T": Translate tool.
 - "Q": Draw a point.
 - "W": Draw a line segment.
 - "E": Draw a circle.
@@ -16,6 +18,7 @@ Each can currently be selected by pressing the corresponding key:
 - "O": Find the convex hull of all circles and draw it as line segments.
 - "`": Display the console history.
 
+Selected objects can be deleted with the delete button.
 The default colour of new geometric objects can be changed with the number keys.
 
 ## Dependencies
