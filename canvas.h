@@ -57,7 +57,6 @@ public:
 	void push(std::vector<std::unique_ptr<geometry<D>>>& geos) {
 		save_state();
 		for (std::unique_ptr<geometry<D>>& geo : geos) {
-			save_state();
 			get_state().geo_stack.push_back(std::move(geo));
 		}
 	}
