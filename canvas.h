@@ -74,7 +74,7 @@ public:
 		// draw selected geometry differently (TODO: move this elsewhere)
 		for (size_t i : get_state().selected) {
 			std::unique_ptr<geometry<D>> cur = get_state().geo_stack[i]->clone();
-			cur->prop.c = col::white;
+			cur->prop.c = col::selected;
 			cur->translate(delta.to_basic());
 			cur->draw();
 		}

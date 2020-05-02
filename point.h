@@ -11,6 +11,12 @@
 #include "properties.h"
 
 template <typename D> class pt : public geometry<D> {
+private:
+	pt<D> preserve_prop(pt<D> p) {
+		p.prop = this->prop;
+		return p;
+	}
+
 protected:
 	virtual pt* clone_impl() const { return new pt(*this); }
 
@@ -36,11 +42,11 @@ public:
 	pt operator*(const pt<D>& oth) const {
 		return pt(x * oth.x - y * oth.y, x * oth.y + y * oth.x);
 	}
-	void operator+=(const pt& oth) { (*this) = (*this) + oth; }
-	void operator-=(const pt& oth) { (*this) = (*this) - oth; }
-	void operator*=(const D& scale) { (*this) = (*this) * scale; }
-	void operator/=(const D& scale) { (*this) = (*this) / scale; }
-	void operator*=(const pt<D>& oth) { (*this) = (*this) * oth; }
+	void operator+=(const pt& oth) { (*this) = preserve_prop((*this) + oth); }
+	void operator-=(const pt& oth) { (*this) = preserve_prop((*this) - oth); }
+	void operator*=(const D& scale) { (*this) = preserve_prop((*this) * scale); }
+	void operator/=(const D& scale) { (*this) = preserve_prop((*this) / scale); }
+	void operator*=(const pt<D>& oth) { (*this) = preserve_prop((*this) * oth); }
 	D norm2() const { return x * x + y * y; }
 	D norm() const { return sqrt(norm2()); }
 	friend D dist2(const pt& a, const pt& b) { return (a - b).norm2(); }
@@ -81,7 +87,7 @@ public:
 	}
 
 	void operator+=(const basic_pt<D>& oth) {
-		(*this) = (*this) + from_basic_pt(oth);
+		(*this) = preserve_prop((*this) + from_basic_pt(oth));
 	}
 	virtual void translate(const basic_pt<D>& delta) { (*this) += delta; }
 
