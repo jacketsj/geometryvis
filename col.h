@@ -1,5 +1,4 @@
-#ifndef COL_H
-#define COL_H
+#pragma once
 
 namespace col {
 struct col {
@@ -13,6 +12,5 @@ extern col gray;
 extern col red;
 extern col green;
 extern col blue;
+extern col selected;
 }; // namespace col
-
-#endif

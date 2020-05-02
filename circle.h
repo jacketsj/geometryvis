@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "basic_rect.h"
 #include "geometry.h"
 #include "line.h"
 #include "point.h"
@@ -75,5 +76,9 @@ public:
 
 	bool inside(const circle& oth, D eps) const {
 		return dist(p, oth.p) < oth.rad() - rad() - eps;
+	}
+
+	virtual basic_rect<D> bounding_box() const {
+		return (rect<D>(p, pt<D>(sqrt(r2), sqrt(r2)))).to_basic();
 	}
 };

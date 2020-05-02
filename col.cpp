@@ -13,4 +13,5 @@ col gray(0.5f, 0.5f, 0.5f, 0.5f);
 col red(0.8, 0.15, 0.1, 1);
 col green(0.1, 0.9, 0.2, 1);
 col blue(0.1, 0.1, 0.85, 1);
+col selected(1.0, 0.1, 0.1, 1);
 } // namespace col

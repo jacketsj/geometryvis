@@ -1,7 +1,5 @@
 #include "circle.h"
 
-#include "geometry.h"
-#include "line.h"
 #include "point.h"
 #include "properties.h"
 #include "render_adapter.h"

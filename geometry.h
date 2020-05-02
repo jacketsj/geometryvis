@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "basic_rect.h"
 #include "properties.h"
 
 template <typename D> class geometry {
@@ -22,4 +23,6 @@ public:
 		return comp_list() < oth.comp_list();
 	}
 	properties prop;
+
+	virtual basic_rect<D> bounding_box() const = 0;
 };

@@ -5,6 +5,7 @@
 #include "geometry.h"
 #include "point.h"
 #include "properties.h"
+#include "rect.h"
 
 template <typename D> class line_segment : public geometry<D> {
 protected:
@@ -24,4 +25,8 @@ public:
 	std::vector<pt<D>> isect(const line_segment<D>& oth) const;
 
 	pt<D> dif() const { return p2 - p1; }
+
+	virtual basic_rect<D> bounding_box() const {
+		return (rect<D>::from_corners(p1, p2)).to_basic();
+	}
 };

@@ -16,6 +16,7 @@
 #include "tool_2point.h"
 #include "tool_console.h"
 #include "tool_point.h"
+#include "tool_select.h"
 
 class tool_handler {
 	typedef double D;
@@ -41,6 +42,7 @@ private:
 		kh.watch(undo);
 		kh.watch(ctrl);
 		kh.watch(shift);
+		kh.watch(del);
 	}
 
 	const static int mb_left = SL_MOUSE_BUTTON_LEFT;
@@ -49,6 +51,7 @@ private:
 	const static int undo = 'Z';
 	const static int ctrl = SL_KEY_LEFT_CONTROL;
 	const static int shift = SL_KEY_LEFT_SHIFT;
+	const static int del = SL_KEY_DELETE;
 
 	std::vector<col::col> col_chooser = {col::blue, col::red, col::green,
 																			 col::white, col::gray};
@@ -69,9 +72,13 @@ public:
 			can.redo();
 		else if (kh.down(ctrl) && kh.pressed(undo))
 			can.undo();
+		else if (kh.pressed(del))
+			can.delete_selected();
 		// handle tool-changing events
 		if (kh.pressed(tilde))
 			cur = std::make_unique<tool_console<D>>();
+		else if (kh.pressed('S'))
+			cur = std::make_unique<tool_select<D>>();
 		else if (kh.pressed('Q'))
 			cur = std::make_unique<tool_point<D>>();
 		else if (kh.pressed('W'))

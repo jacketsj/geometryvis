@@ -1,6 +1,5 @@
 #include "point.h"
 
-#include "geometry.h"
 #include "properties.h"
 #include "render_adapter.h"
 

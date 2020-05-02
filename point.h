@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "basic_rect.h"
 #include "geometry.h"
 #include "properties.h"
 
@@ -65,5 +66,9 @@ public:
 		std::stringstream ss;
 		ss << "(" << x << ',' << y << ")";
 		return ss.str();
+	}
+
+	virtual basic_rect<D> bounding_box() const {
+		return basic_rect<D>(x, y, 2, 2);
 	}
 };
