@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "basic_point.h"
 #include "basic_rect.h"
 #include "properties.h"
 
@@ -25,4 +26,6 @@ public:
 	properties prop;
 
 	virtual basic_rect<D> bounding_box() const = 0;
+
+	virtual void translate(const basic_pt<D>& p) = 0;
 };

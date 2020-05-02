@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "basic_point.h"
 #include "basic_rect.h"
 #include "geometry.h"
 #include "properties.h"
@@ -15,14 +16,21 @@ protected:
 
 public:
 	D x, y;
+
 	pt(D x, D y) : x(x), y(y) {}
 	pt() : x(0), y(0) {}
+	// pt(const basic_pt<D>& p) : x(p.x), y(p.y) {}
+
 	static std::string name() { return "point"; }
+	static pt<D> from_basic_pt(const basic_pt<D>& bp) {
+		return pt<D>(bp.x, bp.y);
+	}
 
 	friend D dp(const pt& a, const pt& b) { return a.x * b.x + a.y * b.y; }
 	friend D cp(const pt& a, const pt& b) { return a.x * b.y - a.y * b.x; }
 	pt operator+(const pt& oth) const { return pt(x + oth.x, y + oth.y); }
 	pt operator-(const pt& oth) const { return pt(x - oth.x, y - oth.y); }
+	pt operator-() const { return pt(-x, -y); }
 	pt operator*(const D& scale) const { return pt(x * scale, y * scale); }
 	pt operator/(const D& scale) const { return pt(x / scale, y / scale); }
 	pt operator*(const pt<D>& oth) const {
@@ -69,6 +77,13 @@ public:
 	}
 
 	virtual basic_rect<D> bounding_box() const {
-		return basic_rect<D>(x, y, 2, 2);
+		return basic_rect<D>(x, y, 16, 16);
 	}
+
+	void operator+=(const basic_pt<D>& oth) {
+		(*this) = (*this) + from_basic_pt(oth);
+	}
+	virtual void translate(const basic_pt<D>& delta) { (*this) += delta; }
+
+	basic_pt<D> to_basic() const { return basic_pt<D>(x, y); }
 };

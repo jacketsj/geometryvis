@@ -21,7 +21,7 @@ void render_adapter::draw_circle(const pt<double>& p, const double& r,
 }
 void render_adapter::draw_point(const pt<double>& p, const properties& prop) {
 	set_color(prop.c);
-	// slPoint(x, y);
+	// slPoint(p.x, p.y);
 	slCircleFill(p.x, p.y, 4, 8);
 }
 void render_adapter::draw_rect(const pt<double>& centre, const pt<double>& size,

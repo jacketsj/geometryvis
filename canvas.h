@@ -69,17 +69,21 @@ public:
 		save_state();
 		get_state().geo_stack.pop_back();
 	}
+
+	void draw_selected(pt<D> delta = pt<D>(0, 0)) {
+		// draw selected geometry differently (TODO: move this elsewhere)
+		for (size_t i : get_state().selected) {
+			std::unique_ptr<geometry<D>> cur = get_state().geo_stack[i]->clone();
+			cur->prop.c = col::white;
+			cur->translate(delta.to_basic());
+			cur->draw();
+		}
+	}
 	void draw() {
 		// draw all geometry
 		for (auto& geo_ptr : get_state().geo_stack)
 			geo_ptr->draw();
-		// draw selected geometry differently (TODO: move this elsewhere)
-		for (size_t i : get_state().selected) {
-			col::col c = get_state().geo_stack[i]->prop.c;
-			get_state().geo_stack[i]->prop.c = col::selected;
-			get_state().geo_stack[i]->draw();
-			get_state().geo_stack[i]->prop.c = c;
-		}
+		draw_selected();
 	}
 
 	// returns the selected elements of a particular type, or all of the type if

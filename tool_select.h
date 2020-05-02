@@ -17,7 +17,7 @@ public:
 	tool_select() { this->print_tool_name("select"); }
 	virtual void l_click(canvas<D>& can) { can.select(cur_mp); }
 	virtual void l_release(canvas<D>& can) {}
-	virtual void r_click(canvas<D>& can) {}
+	virtual void r_click(canvas<D>& can) { can.deselect_all(); }
 	virtual void r_release(canvas<D>& can) {}
 	virtual void draw() const {}
 	virtual void update(canvas<D>& can, const pt<D>& mp) { cur_mp = mp; }

@@ -29,4 +29,9 @@ public:
 	virtual basic_rect<D> bounding_box() const {
 		return (rect<D>::from_corners(p1, p2)).to_basic();
 	}
+
+	virtual void translate(const basic_pt<D>& delta) {
+		p1 += delta;
+		p2 += delta;
+	}
 };

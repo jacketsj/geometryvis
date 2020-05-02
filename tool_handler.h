@@ -17,6 +17,7 @@
 #include "tool_console.h"
 #include "tool_point.h"
 #include "tool_select.h"
+#include "tool_translate.h"
 
 class tool_handler {
 	typedef double D;
@@ -79,6 +80,8 @@ public:
 			cur = std::make_unique<tool_console<D>>();
 		else if (kh.pressed('S'))
 			cur = std::make_unique<tool_select<D>>();
+		else if (kh.pressed('T'))
+			cur = std::make_unique<tool_translate<D>>();
 		else if (kh.pressed('Q'))
 			cur = std::make_unique<tool_point<D>>();
 		else if (kh.pressed('W'))

@@ -51,4 +51,6 @@ public:
 		ret.sz.y += amt;
 		return ret;
 	}
+
+	virtual void translate(const basic_pt<D>& delta) { p += delta; }
 };

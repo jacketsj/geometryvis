@@ -9,9 +9,9 @@ void col::print() const {
 											 std::to_string(a) + ")");
 }
 col white(1, 1, 1, 1);
-col gray(0.5f, 0.5f, 0.5f, 0.5f);
+col gray(0.5f, 0.5f, 0.5f, 1);
 col red(0.8, 0.15, 0.1, 1);
 col green(0.1, 0.9, 0.2, 1);
 col blue(0.1, 0.1, 0.85, 1);
-col selected(1.0, 0.1, 0.1, 0.5);
+col selected(1.0, 0.5, 0.1, 1);
 } // namespace col
