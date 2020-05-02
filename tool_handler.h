@@ -12,6 +12,7 @@
 #include "console.h"
 #include "line.h"
 #include "point.h"
+#include "rect.h"
 #include "tool.h"
 #include "tool_2point.h"
 #include "tool_console.h"
@@ -75,6 +76,8 @@ public:
 			can.undo();
 		else if (kh.pressed(del))
 			can.delete_selected();
+		else if (kh.down(ctrl) && kh.pressed('A'))
+			can.select_all();
 		// handle tool-changing events
 		if (kh.pressed(tilde))
 			cur = std::make_unique<tool_console<D>>();
@@ -88,6 +91,8 @@ public:
 			cur = std::make_unique<tool_2point<line_segment<D>, D>>();
 		else if (kh.pressed('E'))
 			cur = std::make_unique<tool_2point<circle<D>, D>>();
+		else if (kh.pressed('R'))
+			cur = std::make_unique<tool_2point<rect<D>, D>>();
 		else if (kh.pressed('U'))
 			cur = std::make_unique<analysis_convex_hull<D>>();
 		else if (kh.pressed('I'))

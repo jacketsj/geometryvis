@@ -19,15 +19,11 @@ public:
 	rect(D x, D y, D w, D h) : p(x, y), sz(w, h) {}
 	rect() : p(), sz() {}
 	rect(const basic_rect<D>& br) : p(br.x, br.y), sz(br.w, br.h) {}
-	rect(const pt<D>& p, const pt<D>& sz) : p(p), sz(sz) {}
-	static std::string name() { return "rectangle"; }
-
-	static rect<D> from_corners(pt<D> a, pt<D> b) {
-		rect<D> ret;
-		ret.p = pt<D>((a.x + b.x) / 2, (a.y + b.y) / 2);
-		ret.sz = pt<D>(abs(b.x - a.x), abs(b.y - a.y));
-		return ret;
+	rect(const pt<D>& a, const pt<D>& b) {
+		p = pt<D>((a.x + b.x) / 2, (a.y + b.y) / 2);
+		sz = pt<D>(abs(b.x - a.x), abs(b.y - a.y));
 	}
+	static std::string name() { return "rectangle"; }
 
 	virtual std::vector<D> comp_list() const {
 		std::vector<D> ret = p.comp_list();

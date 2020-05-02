@@ -127,6 +127,14 @@ public:
 			}
 		}
 	}
+
+	void select_all() {
+		save_state();
+		get_state().selected.clear();
+		for (size_t i = 0; i < get_state().geo_stack.size(); ++i)
+			get_state().selected.insert(i);
+	}
+
 	void deselect_all() {
 		save_state();
 		get_state().selected.clear();

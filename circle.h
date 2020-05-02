@@ -79,7 +79,7 @@ public:
 	}
 
 	virtual basic_rect<D> bounding_box() const {
-		return (rect<D>(p, pt<D>(2 * sqrt(r2), 2 * sqrt(r2)))).to_basic();
+		return basic_rect<D>(p.x, p.y, 2 * sqrt(r2), 2 * sqrt(r2));
 	}
 
 	virtual void translate(const basic_pt<D>& delta) { p += delta; }

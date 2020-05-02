@@ -27,7 +27,7 @@ public:
 	pt<D> dif() const { return p2 - p1; }
 
 	virtual basic_rect<D> bounding_box() const {
-		return (rect<D>::from_corners(p1, p2)).to_basic();
+		return (rect<D>(p1, p2)).to_basic();
 	}
 
 	virtual void translate(const basic_pt<D>& delta) {
