@@ -1,21 +1,18 @@
-#pragma once
-
-#include <sl.h>
+#ifndef COL_H
+#define COL_H
 
 namespace col {
 struct col {
 	double r, g, b, a;
+	col() : r(0), g(0), b(0), a(0) {}
 	col(double r, double g, double b, double a) : r(r), g(g), b(b), a(a) {}
-	void set() const;
+	void print() const;
 };
-col white(1, 1, 1, 1);
-col gray(0.5f, 0.5f, 0.5f, 0.5f);
-col red(0.8, 0.15, 0.1, 1);
-col green(0.1, 0.9, 0.2, 1);
-col blue(0.1, 0.1, 0.85, 1);
-col cur_col = white;
-void col::set() const {
-	cur_col = *this;
-	slSetForeColor(r, g, b, a);
-}
+extern col white;
+extern col gray;
+extern col red;
+extern col green;
+extern col blue;
 }; // namespace col
+
+#endif

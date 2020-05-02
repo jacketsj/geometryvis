@@ -4,11 +4,11 @@
 #include <limits>
 #include <list>
 #include <memory>
-#include <sl.h>
 #include <string>
 #include <vector>
 
 #include "col.h"
+#include "properties.h"
 
 struct console_line {
 	const double text_lifetime = 10.0f;
@@ -17,21 +17,10 @@ struct console_line {
 	std::string s;
 	double expiry;
 	console_line() {}
-	console_line(const std::string& s, bool expires = true)
-			: s(s), expiry(expires ? slGetTime() + text_lifetime
-														 : std::numeric_limits<double>::infinity()) {}
-	bool expired() { return slGetTime() > expiry; }
-	col::col get_col_bg() const {
-		col::col ret = bg_col;
-		ret.a = std::min(expiry - slGetTime(), text_lifetime) / text_lifetime;
-		return ret;
-	}
-	col::col get_col() const {
-		col::col ret = text_col;
-		ret.a =
-				std::min(expiry - slGetTime(), text_lifetime) / text_lifetime / 2.0f;
-		return ret;
-	}
+	console_line(const std::string& s, bool expires = true);
+	bool expired() const;
+	col::col get_col_bg() const;
+	col::col get_col() const;
 };
 
 class console {
@@ -42,27 +31,15 @@ private:
 	std::list<console_line> history;
 	bool display_history;
 	int font;
-	console() {
-		display_history = false;
-		font = slLoadFont("ttf/white_rabbit.ttf");
-	}
+	console();
 
 	const static size_t MAX_LINES = 5;
 	const static size_t MAX_LINES_HISTORY = 100;
 
-	void clean() {
-		while (!output.empty() &&
-					 (output.size() > MAX_LINES || output.front().expired())) {
-			output.pop_front();
-		}
-	}
+	void clean();
 
-	static void rect_with_coords(double x, double y, double width,
-															 double height) {
-		double center_x = x + width / 2.0f;
-		double center_y = y + height / 2.0f;
-		slRectangleFill(center_x, center_y, width, height);
-	}
+	static void rect_with_coords(double x, double y, double width, double height,
+															 const properties& prop);
 
 public:
 	static console& get() {
@@ -73,46 +50,9 @@ public:
 	console(const console&) = delete;
 	void operator=(const console&) = delete;
 
-	void print(const std::string& s) {
-		output.emplace_back(s);
-		history.emplace_back(s, false);
-		clean();
-	}
+	void print(const std::string& s);
 
 	void set_history_display(bool show) { display_history = show; }
 
-	// TODO cleanup
-	void draw() {
-		clean();
-		std::vector<console_line> to_draw;
-		std::list<console_line>& current_vis = display_history ? history : output;
-		for (auto iter = current_vis.rbegin();
-				 iter != current_vis.rend() && to_draw.size() <= MAX_LINES_HISTORY;
-				 ++iter)
-			to_draw.push_back(*iter);
-		double margin_x = 4, margin_y = 4;
-		double x, y, dx, dy, width, height;
-		dx = 4;
-		dy = 2;
-		int offset = 0;
-		int top = 0;
-		col::col prev = col::cur_col;
-		slSetFont(font, font_size);
-		slSetTextAlign(SL_ALIGN_LEFT);
-		for (const console_line& l : to_draw) {
-			const std::string& s = l.s;
-			top = offset;
-			width = slGetTextWidth(s.c_str());
-			height = slGetTextHeight(s.c_str());
-			x = 0.0f + margin_x;
-			y = double(offset) + margin_y;
-			top += height;
-			l.get_col_bg().set();
-			rect_with_coords(x - dx / 2, y - dy, width + dx, height + dy / 2);
-			l.get_col().set();
-			slText(x, y, s.c_str());
-			offset = top + 3;
-		}
-		prev.set();
-	}
+	void draw();
 };

@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
+
+#include "properties.h"
 
 template <typename D> class geometry {
 protected:
@@ -18,4 +21,5 @@ public:
 	virtual bool operator<(const geometry& oth) const {
 		return comp_list() < oth.comp_list();
 	}
+	properties prop;
 };

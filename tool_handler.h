@@ -1,5 +1,6 @@
 #pragma once
 
+#include <assert.h>
 #include <memory>
 
 #include "analysis_convex_hull.h"
@@ -30,8 +31,10 @@ private:
 			: cur(std::make_unique<tool_point<D>>()),
 				mh(button_handler::get_mouse_handler()),
 				kh(button_handler::get_key_handler()) {
-		for (char i = 0; i <= 9; ++i)
-			kh.watch('0' + i);
+		for (char i = '0'; i <= '9'; ++i)
+			kh.watch(i);
+		for (char i = 'A'; i <= 'Z'; ++i)
+			kh.watch(i);
 		kh.watch(tilde);
 		mh.watch(mb_left);
 		mh.watch(mb_right);
@@ -46,6 +49,9 @@ private:
 	const static int undo = 'Z';
 	const static int ctrl = SL_KEY_LEFT_CONTROL;
 	const static int shift = SL_KEY_LEFT_SHIFT;
+
+	std::vector<col::col> col_chooser = {col::white, col::gray, col::red,
+																			 col::green, col::blue};
 
 public:
 	static tool_handler& get() {
@@ -66,18 +72,25 @@ public:
 		// handle tool-changing events
 		if (kh.pressed(tilde))
 			cur = std::make_unique<tool_console<D>>();
-		else if (kh.pressed('1'))
+		else if (kh.pressed('Q'))
 			cur = std::make_unique<tool_point<D>>();
-		else if (kh.pressed('2'))
+		else if (kh.pressed('W'))
 			cur = std::make_unique<tool_2point<line_segment<D>, D>>();
-		else if (kh.pressed('3'))
+		else if (kh.pressed('E'))
 			cur = std::make_unique<tool_2point<circle<D>, D>>();
-		else if (kh.pressed('4'))
+		else if (kh.pressed('U'))
 			cur = std::make_unique<analysis_convex_hull<D>>();
-		else if (kh.pressed('5'))
+		else if (kh.pressed('I'))
 			cur = std::make_unique<analysis_line_intersection<D>>();
-		else if (kh.pressed('6'))
+		else if (kh.pressed('O'))
 			cur = std::make_unique<analysis_convex_hull_circles<D>>();
+		assert(col_chooser.size() <= 9);
+		for (size_t button = 0; button <= col_chooser.size(); ++button) {
+			if (kh.pressed(button + '1')) {
+				default_properties.c = col_chooser[button];
+				default_properties.c.print();
+			}
+		}
 
 		// update the tool
 		cur->update(can, mp);

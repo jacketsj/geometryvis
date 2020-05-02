@@ -56,14 +56,9 @@ int main(int args, char* argv[]) {
 
 	tool_handler& th = tool_handler::get();
 
-	col::blue.set();
-
 	console& con = console::get();
 
 	while (!slShouldClose() && !slGetKey(SL_KEY_ESCAPE)) {
-		// set the default background col
-		col::cur_col.set();
-
 		// update the window dimensions
 		dim.update();
 

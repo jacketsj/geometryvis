@@ -12,7 +12,18 @@ add_library(sl SHARED IMPORTED)
 
 set(CMAKE_CXX_FLAGS "-Wall -std=c++1z")
 
-add_executable(geovis ${PROJECT_SOURCE_DIR}/geovis.cpp)
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/*.cpp")
+
+#add_executable(geovis ${PROJECT_SOURCE_DIR}/geovis.cpp ${PROJECT_SOURCE_DIR}/col.cpp ${PROJECT_SOURCE_DIR}/line.cpp ${PROJECT_SOURCE_DIR}/circle.cpp ${PROJECT_SOURCE_DIR}/properties.cpp ${PROJECT_SOURCE_DIR}/render_adapter.cpp ${PROJECT_SOURCE_DIR}/console.cpp)
+#add_executable(geovis ${PROJECT_SOURCE_DIR}/geovis.cpp)
+add_executable(geovis ${SOURCES})
+#target_link_libraries(geovis
+#	col.cpp
+#	line.cpp
+#	circle.cpp
+#	properties.cpp
+#	render_adapter.cpp
+#	console.cpp)
 
 #target_link_libraries(geovis glfw)
 target_link_libraries(geovis sigil)

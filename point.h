@@ -1,11 +1,12 @@
 #pragma once
 
-#include <sl.h>
+#include <cmath>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "geometry.h"
+#include "properties.h"
 
 template <typename D> class pt : public geometry<D> {
 protected:
@@ -58,10 +59,8 @@ public:
 	static pt origin() { return pt(0, 0); }
 
 	virtual std::vector<D> comp_list() const { return {x, y}; }
-	virtual void draw() const {
-		// slPoint(x, y);
-		slCircleFill(x, y, 4, 8);
-	}
+	virtual void draw() const;
+
 	std::string to_string() const {
 		std::stringstream ss;
 		ss << "(" << x << ',' << y << ")";

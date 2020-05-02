@@ -35,11 +35,9 @@ public:
 	virtual void r_release(canvas<D>& can) {}
 	virtual void draw() const {
 		if (cur) {
-			col::col prev = col::cur_col;
-			col::red.set();
 			T cur_ls(cur.value(), cur_mp);
+			cur_ls.prop.c = col::red;
 			cur_ls.draw();
-			prev.set();
 		}
 	}
 	virtual void update(canvas<D>& can, const pt<D>& mp) { cur_mp = mp; }

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <cmath>
-#include <sl.h>
 #include <string>
 #include <vector>
 
 #include "geometry.h"
 #include "line.h"
 #include "point.h"
+#include "properties.h"
+#include "render_adapter.h"
 
 template <typename D> class circle : public geometry<D> {
 private:
@@ -24,7 +25,7 @@ public:
 	circle(const pt<D>& p, D r2) : p(p), r2(r2) {}
 	circle(const pt<D>& p, const pt<D>& pr) : p(p), r2(dist2(pr, p)) {}
 	static std::string name() { return "circle"; }
-	virtual void draw() const { slCircleOutline(p.x, p.y, sqrt(double(r2)), r2); }
+	virtual void draw() const;
 	virtual std::vector<D> comp_list() const {
 		std::vector<D> ret = p.comp_list();
 		ret.push_back(r2);
