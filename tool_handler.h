@@ -50,8 +50,8 @@ private:
 	const static int ctrl = SL_KEY_LEFT_CONTROL;
 	const static int shift = SL_KEY_LEFT_SHIFT;
 
-	std::vector<col::col> col_chooser = {col::white, col::gray, col::red,
-																			 col::green, col::blue};
+	std::vector<col::col> col_chooser = {col::blue, col::red, col::green,
+																			 col::white, col::gray};
 
 public:
 	static tool_handler& get() {
