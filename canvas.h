@@ -12,24 +12,24 @@
 
 template <typename D> class canvas {
 private:
-	struct page {
-		struct canvas_state {
-			std::vector<std::unique_ptr<geometry<D>>> geo_stack;
-			std::set<size_t> selected;
-			canvas_state() {}
-			canvas_state(const canvas_state& cs) {
-				for (const auto& geo_ptr : cs.geo_stack)
-					geo_stack.push_back(geo_ptr->clone());
-				selected = cs.selected;
-			}
-		};
+	struct canvas_state {
+		std::vector<std::unique_ptr<geometry<D>>> geo_stack;
+		std::set<size_t> selected;
+		canvas_state() {}
+		canvas_state(const canvas_state& cs) {
+			for (const auto& geo_ptr : cs.geo_stack)
+				geo_stack.push_back(geo_ptr->clone());
+			selected = cs.selected;
+		}
+	};
 
+	struct page {
 		std::vector<canvas_state> cvs_history;
 		size_t current_state = -1;
 
 		page() {
 			cvs_history.emplace_back();
-			current_state;
+			current_state = 0;
 		}
 
 		canvas_state& get_state() { return cvs_history[current_state]; }
@@ -65,9 +65,9 @@ public:
 	}
 
 	void undo() { get_page().undo(); }
-	void redo() { get_page.redo(); }
-	void clear_redos() { get_page.clear_redos(); }
-	void save_state() { get_page.save_state(); }
+	void redo() { get_page().redo(); }
+	void clear_redos() { get_page().clear_redos(); }
+	void save_state() { get_page().save_state(); }
 
 	// TODO
 	// void undo_page();
@@ -132,6 +132,7 @@ public:
 		else
 			for (size_t i : get_state().selected) {
 				std::unique_ptr<geometry<D>>& geo = get_state().geo_stack[i];
+				add(geo);
 			}
 		return ret;
 	}
