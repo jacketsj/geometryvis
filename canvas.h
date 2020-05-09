@@ -90,14 +90,22 @@ public:
 	template <typename T>
 	std::vector<std::reference_wrapper<const T>> filter_get() {
 		std::vector<std::reference_wrapper<const T>> ret;
-		for (std::unique_ptr<geometry<D>>& geo : get_state().geo_stack) {
+		auto add = [&](std::unique_ptr<geometry<D>>& geo) {
 			try {
 				T& geo_casted = dynamic_cast<T&>(*geo);
 				ret.push_back(geo_casted);
 			} catch (std::bad_cast& bc) {
 				// skip
 			}
-		}
+		};
+		if (get_state().selected.empty())
+			for (std::unique_ptr<geometry<D>>& geo : get_state().geo_stack) {
+				add(geo);
+			}
+		else
+			for (size_t i : get_state().selected) {
+				std::unique_ptr<geometry<D>>& geo = get_state().geo_stack[i];
+			}
 		return ret;
 	}
 
