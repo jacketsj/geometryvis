@@ -12,43 +12,70 @@
 
 template <typename D> class canvas {
 private:
-	struct canvas_state {
-		std::vector<std::unique_ptr<geometry<D>>> geo_stack;
-		std::set<size_t> selected;
-		canvas_state() {}
-		canvas_state(const canvas_state& cs) {
-			for (const auto& geo_ptr : cs.geo_stack)
-				geo_stack.push_back(geo_ptr->clone());
-			selected = cs.selected;
+	struct page {
+		struct canvas_state {
+			std::vector<std::unique_ptr<geometry<D>>> geo_stack;
+			std::set<size_t> selected;
+			canvas_state() {}
+			canvas_state(const canvas_state& cs) {
+				for (const auto& geo_ptr : cs.geo_stack)
+					geo_stack.push_back(geo_ptr->clone());
+				selected = cs.selected;
+			}
+		};
+
+		std::vector<canvas_state> cvs_history;
+		size_t current_state = -1;
+
+		page() {
+			cvs_history.emplace_back();
+			current_state;
+		}
+
+		canvas_state& get_state() { return cvs_history[current_state]; }
+
+		void undo() {
+			console::get().print("undo");
+			if (current_state > 0)
+				--current_state;
+		}
+		void redo() {
+			console::get().print("redo");
+			if (current_state + 1 < cvs_history.size())
+				++current_state;
+		}
+		void clear_redos() { cvs_history.resize(current_state + 1); }
+		void save_state() {
+			clear_redos();
+			cvs_history.emplace_back(cvs_history.back());
+			++current_state;
 		}
 	};
-	std::vector<canvas_state> cvs_history;
-	size_t current_state = -1;
 
-	canvas_state& get_state() { return cvs_history[current_state]; }
+	std::vector<page> pages;
+	size_t current_page;
+
+	page& get_page() { return pages[current_page]; }
+	canvas_state& get_state() { return get_page().get_state(); }
 
 public:
 	canvas() {
-		cvs_history.emplace_back();
-		current_state = 0;
+		pages.emplace_back();
+		current_page = 0;
 	}
 
-	void undo() {
-		console::get().print("undo");
-		if (current_state > 0)
-			--current_state;
-	}
-	void redo() {
-		console::get().print("redo");
-		if (current_state + 1 < cvs_history.size())
-			++current_state;
-	}
-	void clear_redos() { cvs_history.resize(current_state + 1); }
-	void save_state() {
-		clear_redos();
-		cvs_history.emplace_back(cvs_history.back());
-		++current_state;
-	}
+	void undo() { get_page().undo(); }
+	void redo() { get_page.redo(); }
+	void clear_redos() { get_page.clear_redos(); }
+	void save_state() { get_page.save_state(); }
+
+	// TODO
+	// void undo_page();
+	// void redo_page();
+	// void clear_page_redos();
+	// void save_page_state();
+	// void new_page();
+	// void delete_page();
 
 	template <typename T, typename... Args> void push(Args&&... args) {
 		save_state();
