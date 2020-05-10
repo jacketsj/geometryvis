@@ -81,15 +81,21 @@ public:
 	void save_state() { get_page().save_state(); }
 
 	// TODO
+	void print_current_page() {
+		pages& ps = get_pages_state();
+		console::get().print("page: " + std::to_string(ps.current_page + 1));
+	}
 	void undo_page() {
-		console::get().print("undo page");
+		console::get().print("undo (page)");
 		if (current_page_state > 0)
 			--current_page_state;
+		print_current_page();
 	}
 	void redo_page() {
-		console::get().print("redo page");
+		console::get().print("redo (page)");
 		if (current_page_state + 1 < pages_history.size())
 			++current_page_state;
+		print_current_page();
 	}
 	void clear_page_redos() { pages_history.resize(current_page_state + 1); }
 	void save_page_state() {
@@ -97,17 +103,44 @@ public:
 		pages_history.emplace_back(pages_history.back());
 		++current_page_state;
 	}
-	void insert_page(page& p) {
+	void insert_page(const page& p) {
 		save_page_state();
 		pages& ps = get_pages_state();
-		ps.page_vec.insert(ps.page_vec.begin() + ps.current_page, p);
+		ps.page_vec.insert(ps.page_vec.begin() + ps.current_page + 1, p);
+		ps.current_page++;
 	}
-	void new_page() { insert_page(page()); }
-	void duplicate_page() { insert_page(get_page()); }
+	void new_page() {
+		insert_page(page());
+		console::get().print("page created");
+		print_current_page();
+	}
+	void duplicate_page() {
+		insert_page(get_page());
+		console::get().print("page duplicated");
+		print_current_page();
+	}
 	void delete_page() {
-		save_page_state();
+		if (get_pages_state().page_vec.size() > 1) {
+			save_page_state();
+			pages& ps = get_pages_state();
+			ps.page_vec.erase(ps.page_vec.begin() + ps.current_page);
+			if (ps.current_page > 0)
+				--ps.current_page;
+			console::get().print("page deleted");
+			print_current_page();
+		}
+	}
+	void next_page() {
 		pages& ps = get_pages_state();
-		ps.page_vec.remove(ps.page_vec.begin() + ps.current_page);
+		if (ps.current_page < ps.page_vec.size() - 1)
+			ps.current_page++;
+		print_current_page();
+	}
+	void prev_page() {
+		pages& ps = get_pages_state();
+		if (ps.current_page > 0)
+			ps.current_page--;
+		print_current_page();
 	}
 
 	template <typename T, typename... Args> void push(Args&&... args) {

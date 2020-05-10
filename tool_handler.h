@@ -45,6 +45,9 @@ private:
 		kh.watch(ctrl);
 		kh.watch(shift);
 		kh.watch(del);
+		kh.watch(space);
+		kh.watch(page_up);
+		kh.watch(page_down);
 	}
 
 	const static int mb_left = SL_MOUSE_BUTTON_LEFT;
@@ -54,6 +57,9 @@ private:
 	const static int ctrl = SL_KEY_LEFT_CONTROL;
 	const static int shift = SL_KEY_LEFT_SHIFT;
 	const static int del = SL_KEY_DELETE;
+	const static int space = ' ';
+	const static int page_up = SL_KEY_PAGE_UP;
+	const static int page_down = SL_KEY_PAGE_DOWN;
 
 	std::vector<col::col> col_chooser = {col::blue, col::red, col::green,
 																			 col::white, col::gray};
@@ -78,8 +84,24 @@ public:
 			can.delete_selected();
 		else if (kh.down(ctrl) && kh.pressed('A'))
 			can.select_all();
+		// handle page events
+		if (kh.down(space)) {
+			if (kh.down(shift) && kh.pressed(undo))
+				can.redo_page();
+			else if (kh.pressed(undo))
+				can.undo_page();
+			else if (kh.pressed('C'))
+				can.new_page();
+			else if (kh.pressed('D'))
+				can.delete_page();
+			else if (kh.pressed('V'))
+				can.duplicate_page();
+		} else if (kh.pressed(page_down))
+			can.next_page();
+		else if (kh.pressed(page_up))
+			can.prev_page();
 		// handle tool-changing events
-		if (kh.pressed(tilde))
+		else if (kh.pressed(tilde))
 			cur = std::make_unique<tool_console<D>>();
 		else if (kh.pressed('S'))
 			cur = std::make_unique<tool_select<D>>();
