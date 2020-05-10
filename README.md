@@ -6,17 +6,30 @@ Current in development.
 
 ## Usage
 
-There are different tools available.
+There are different tools available. Tools can have left or right click functionality.
 Each can currently be selected by pressing the corresponding key:
 - "S": Selection tool.
 - "T": Translate tool.
 - "Q": Draw a point.
 - "W": Draw a line segment.
 - "E": Draw a circle.
+- "R": Draw a rectangle.
 - "U": Find the convex hull of all points and draw it as line segments.
 - "I": Find all the pairwise intersections of line segments and draw them as circles.
 - "O": Find the convex hull of all circles and draw it as line segments.
 - "`": Display the console history.
+
+Other shortcuts:
+- "CTRL+Z": Undo.
+- "CTRL+SHIFT+Z": Redo.
+- "CTRL+A": Select all.
+- "SPACE+C": New empty page.
+- "SPACE+V": Duplicate current page.
+- "SPACE+D": Delete current page.
+- "PAGE_UP": Previous page.
+- "PAGE_DOWN": Next page.
+- "SPACE+Z": Undo page change.
+- "SPACE+SHIFT+Z": Redo page change.
 
 Selected objects can be deleted with the delete button.
 The default colour of new geometric objects can be changed with the number keys.
