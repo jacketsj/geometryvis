@@ -52,16 +52,27 @@ private:
 		}
 	};
 
-	std::vector<page> pages;
-	size_t current_page;
+	struct pages {
+		std::vector<page> page_vec;
+		size_t current_page;
+		pages() {
+			page_vec.emplace_back();
+			current_page = 0;
+		}
+		page& get_page() { return page_vec[current_page]; }
+	};
 
-	page& get_page() { return pages[current_page]; }
+	std::vector<pages> pages_history;
+	size_t current_page_state;
+
+	pages& get_pages_state() { return pages_history[current_page_state]; }
+	page& get_page() { return get_pages_state().get_page(); }
 	canvas_state& get_state() { return get_page().get_state(); }
 
 public:
 	canvas() {
-		pages.emplace_back();
-		current_page = 0;
+		pages_history.emplace_back();
+		current_page_state = 0;
 	}
 
 	void undo() { get_page().undo(); }
@@ -70,12 +81,34 @@ public:
 	void save_state() { get_page().save_state(); }
 
 	// TODO
-	// void undo_page();
-	// void redo_page();
-	// void clear_page_redos();
-	// void save_page_state();
-	// void new_page();
-	// void delete_page();
+	void undo_page() {
+		console::get().print("undo page");
+		if (current_page_state > 0)
+			--current_page_state;
+	}
+	void redo_page() {
+		console::get().print("redo page");
+		if (current_page_state + 1 < pages_history.size())
+			++current_page_state;
+	}
+	void clear_page_redos() { pages_history.resize(current_page_state + 1); }
+	void save_page_state() {
+		clear_page_redos();
+		pages_history.emplace_back(pages_history.back());
+		++current_page_state;
+	}
+	void insert_page(page& p) {
+		save_page_state();
+		pages& ps = get_pages_state();
+		ps.page_vec.insert(ps.page_vec.begin() + ps.current_page, p);
+	}
+	void new_page() { insert_page(page()); }
+	void duplicate_page() { insert_page(get_page()); }
+	void delete_page() {
+		save_page_state();
+		pages& ps = get_pages_state();
+		ps.page_vec.remove(ps.page_vec.begin() + ps.current_page);
+	}
 
 	template <typename T, typename... Args> void push(Args&&... args) {
 		save_state();
