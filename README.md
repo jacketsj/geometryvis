@@ -30,6 +30,7 @@ Other shortcuts:
 - "PAGE_DOWN": Next page.
 - "SPACE+Z": Undo page change.
 - "SPACE+SHIFT+Z": Redo page change.
+- "ESC": Close the program.
 
 Selected objects can be deleted with the delete button.
 The default colour of new geometric objects can be changed with the number keys.
